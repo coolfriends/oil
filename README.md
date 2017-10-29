@@ -17,3 +17,15 @@ some specific design goals:
 * Offers a simple to use interface for use as a library
 * Simplified plugin design
 * Dynamically include or exclude plugins
+
+## Contributing
+Create your branch with a descriptive name, create a virtual env, and download dependencies:
+```bash
+pip install -r requirements.txt
+pip install -r requirements.dev.txt
+```
+
+Run the tests
+```bash
+invoke test
+```

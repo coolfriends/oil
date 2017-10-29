@@ -1,0 +1,3 @@
+class CloudFrontInsecureProtocols():
+    pass
+
