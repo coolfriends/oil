@@ -12,12 +12,7 @@ This project is based on some specific design goals:
 * Enables users to configure varios aspects of plugins at runtime (specific to each plugin)
 * Enables users to easily design new plugins
 * Results are returned in a simple to navigate Python dictionary
-
-
-## Features
-* Offers a simple to use interface for use as a library
-* Simplified plugin design
-* Dynamically include or exclude plugins
+* Support for Azure and Google Cloud
 
 ## Contributing
 Create your branch with a descriptive name, create a virtual env, and download dependencies:
