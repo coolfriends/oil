@@ -1,4 +1,4 @@
-class Refinery(Refinery):
+class Refinery():
     """ Interface for higher level abstractions over boto3
     """
 

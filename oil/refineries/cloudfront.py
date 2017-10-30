@@ -1,3 +1,6 @@
+from oil.refinery import Refinery
+
+
 class CloudFrontRefinery(Refinery):
     """ A higher level abstraction over boto3 CloudFront operations
     """
