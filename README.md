@@ -1,6 +1,6 @@
 oil
 ====
-
+[![Build Status](https://travis-ci.org/coolfriends/oil.svg?branch=master)](https://travis-ci.org/coolfriends/oil)
 An extensible cloud security analysis tool
 
 ## Goals
