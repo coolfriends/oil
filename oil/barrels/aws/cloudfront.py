@@ -1,9 +1,11 @@
 import boto3
 
 class CloudFrontBarrel():
+    def __init__(self, client=None):
+        self.client = client or boto3.client('cloudfront')
+
     def list_distributions(self):
-        cloudfront = boto3.client('cloudfront')
-        paginator = cloudfront.get_paginator('list_distributions')
+        paginator = self.client.get_paginator('list_distributions')
         response_iterator = paginator.paginate()
         items_list = []
 
