@@ -25,3 +25,11 @@ Run the tests
 ```bash
 invoke test
 ```
+
+## Todo
+* Decide on documentation format and write documentation using that format
+* Write an invoke command to build documentation & clean up if necessary 
+  (just google it)
+* Write tests that cover as many potential inputs as possible. Specifically
+  for plugins and edge cases for integrations tests (API call errors, etc)
+

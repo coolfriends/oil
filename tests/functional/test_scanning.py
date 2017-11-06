@@ -15,6 +15,7 @@ from oil import Oil
 
 
 class ScanningTestCase(unittest.TestCase):
+    @unittest.expectedFailure
     def test_user_can_scan_using_dictionary_configuration(self):
         test_configuration = {
             'aws': {
@@ -29,4 +30,10 @@ class ScanningTestCase(unittest.TestCase):
         data = oil.scan()
         expected = data.get('aws', {}).get('cloudfront', {}).get('tls_protocol')
 
-        self.assertIsNotNone(expected)
+        self.assertIsNotNone(
+            expected,
+            (
+                'This core functionality of the oil interface '
+                'needs to be implemented'
+            )
+        )
