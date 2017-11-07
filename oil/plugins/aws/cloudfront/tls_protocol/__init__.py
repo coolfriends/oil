@@ -1,8 +1,29 @@
 class TLSProtocolPlugin():
-    def run(self, data):
-        results = []
 
-        if not data:
+    name = 'tls_protocol'
+    provider = 'aws'
+    service = 'cloudfront'
+
+    required_api_calls = {
+        'aws': {
+            'cloudfront': [
+                'list_distributions'
+            ]
+        }
+    }
+
+    def __init__(self, config={}):
+        """
+        TODO: Set up sensible default config
+        TODO: Set up configurable variables
+        """
+        self.config = config
+
+    def run(self, api_data):
+        results = []
+        distributions = api_data['aws']['cloudfront']['aws-global']['list_distributions']
+
+        if not distributions:
             results.append({
                 'resource': 'None',
                 'region': 'aws-global',
@@ -10,9 +31,9 @@ class TLSProtocolPlugin():
                 'message': 'No distributions found'
             })
 
-        for item in data:
-            resource_arn = item['ARN']
-            protocol_version = item['ViewerCertificate']['MinimumProtocolVersion']
+        for distribution in distributions:
+            resource_arn = distribution['ARN']
+            protocol_version = distribution['ViewerCertificate']['MinimumProtocolVersion']
             if protocol_version == 'SSLv3':
                 severity = 2
                 message = '{} is insecure'.format(protocol_version)

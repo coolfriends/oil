@@ -5,10 +5,10 @@ from tests.fixtures.aws.cloudfront import response_iterator_fixture
 
 
 class CloudFrontBarrelTestCase(unittest.TestCase):
-    def client_mock(self):
+    def client_mock(self, fixture):
         client = MagicMock()
         paginator = MagicMock()
-        response_iterator = response_iterator_fixture
+        response_iterator = fixture
 
         paginator.paginate.return_value = response_iterator
         client.get_paginator.return_value = paginator
@@ -16,7 +16,7 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
         return client
 
     def test_list_distributions_returns_only_distributions(self):
-        client = self.client_mock()
+        client = self.client_mock(response_iterator_fixture)
         barrel = CloudFrontBarrel(client)
 
         results = barrel.list_distributions()
@@ -47,5 +47,38 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
                 }
             }
         ]
+
+        self.assertEqual(results, expected)
+
+    def test_list_distributions_empty_with_no_distributions(self):
+        fixture = [ # Multiple pages of empty
+            {
+                'DistributionList': {
+                    'Items': []
+                }
+            }
+        ]
+        client = self.client_mock(fixture)
+        barrel = CloudFrontBarrel(client)
+
+        results = barrel.list_distributions()
+
+        expected = []
+
+        self.assertEqual(results, expected)
+
+    def test_list_distributions_returns_empty_list_with_no_items_key(self):
+        fixture = [ # Multiple pages of empty
+            {
+                'DistributionList': {
+                }
+            }
+        ]
+        client = self.client_mock(fixture)
+        barrel = CloudFrontBarrel(client)
+
+        results = barrel.list_distributions()
+
+        expected = []
 
         self.assertEqual(results, expected)

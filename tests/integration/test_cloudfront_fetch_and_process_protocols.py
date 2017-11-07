@@ -23,7 +23,17 @@ class CloudfrontFetchAndProcessProtocols(unittest.TestCase):
         client = self.client_mock()
         barrel = CloudFrontBarrel(client)
         data = barrel.list_distributions()
-        results = plugin.run(data)
+        api_data_fixture = {
+            'aws': {
+                'cloudfront': {
+                    'aws-global': {
+                        'list_distributions': data
+                    }
+                }
+            }
+
+        }
+        results = plugin.run(api_data_fixture)
         expected = [
             'resource',
             'region',

@@ -15,14 +15,16 @@ from oil import Oil
 
 
 class ScanningTestCase(unittest.TestCase):
-    @unittest.expectedFailure
-    def test_user_can_scan_using_dictionary_configuration(self):
+    @unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", "Skipping this test on Travis CI.")
+    def test_user_can_scan_with_one_plugin_using_dictionary_configuration(self):
         test_configuration = {
             'aws': {
                 'cloudfront': {
-                    'tls_protocol': {
-
-                    }
+                    'plugins': [
+                        {
+                            'name': 'tls_protocol',
+                        }
+                    ]
                 }
             }
         }
