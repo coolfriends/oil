@@ -4,6 +4,25 @@ from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
 
 class Oil():
+    default_config = {
+        'aws': {
+            'cloudfront': {
+                'plugins': [
+                    {
+                        'name': 'tls_protocol',
+                    },
+                ]
+            },
+            'ec2': {
+                'plugins': [
+                    {
+                        'name': 'instance_name_tag',
+                    },
+                ]
+            }
+        }
+    }
+
     supports = {
         'aws': {
             'cloudfront': {
@@ -14,14 +33,12 @@ class Oil():
             }
         }
     }
-    providers = ['aws']
-    services = []
 
     def __init__(self, config={}):
         """
         TODO: Create sensible default configuration
         """
-        self.config = config;
+        self.config = config or self.default_config;
         self.cached_api_data = {}
         self.scan_data = {}
         self.plugins = []
@@ -37,7 +54,6 @@ class Oil():
     def configure(self, config):
         self.config = config
         self._load_plugins()
-
 
     @property
     def providers(self):

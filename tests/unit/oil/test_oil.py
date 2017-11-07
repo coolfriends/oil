@@ -4,10 +4,10 @@ from oil import Oil
 
 class OilTestCase(unittest.TestCase):
 
-    def test_providers_is_empty_with_no_config_passed(self):
+    def test_providers_are_default_with_no_config_passed(self):
         oil = Oil()
         providers = oil.providers
-        self.assertEqual(providers, [])
+        self.assertEqual(providers, ['aws'])
 
     def test_add_config_post_initialization_configures_plugins(self):
         oil = Oil()
@@ -22,6 +22,7 @@ class OilTestCase(unittest.TestCase):
                 }
             }
         }
+
         oil.configure(config)
         self.assertEqual(oil.config, config)
 
@@ -30,6 +31,14 @@ class OilTestCase(unittest.TestCase):
 
     def test_services_throws_error_with_unsupported_provider(self):
         oil = Oil()
+        with self.assertRaises(RuntimeError):
+            services = oil.services('unsupported_provider')
+
+    def test_services_empty_with_no_services(self):
+        config = {
+            'aws': {}
+        }
+        oil = Oil(config)
         with self.assertRaises(RuntimeError):
             services = oil.services('unsupported_provider')
 
