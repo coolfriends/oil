@@ -1,9 +1,11 @@
 # Make sure that Oil implements all necessary EC2 security plugins
 import unittest
+import os
 
 from oil import Oil
 
 
+@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", "Skipping this test on Travis CI.")
 class EC2ScanningTestCase(unittest.TestCase):
     def test_oil_can_scan_for_name_tag_compliance(self):
         config = {

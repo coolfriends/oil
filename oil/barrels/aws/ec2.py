@@ -17,7 +17,7 @@ class EC2Barrel():
         'ca-central-1',
         'eu-central-1',
         'eu-west-1',
-        'eu-west-2'
+        'eu-west-2',
         'sa-east-1'
     ])
 
@@ -25,13 +25,22 @@ class EC2Barrel():
         self.clients = clients or self._default_clients()
 
     def _default_clients(self):
+        clients = {}
         for region in self._default_regions:
-            self.clients[region] = boto3.client('ec2', region_name=region)
+            clients[region] = boto3.client('ec2', region_name=region)
+        return clients
+
+    def tap(self, call):
+        if call == 'describe_instances':
+            return self.describe_instances()
+        else:
+            raise RuntimeError('The api call {} is not implemented'.format(call))
 
     def describe_instances(self):
         instances_by_region = {}
         for region, client in self.clients.items():
             paginator = client.get_paginator('describe_instances')
+
             response_iterator = paginator.paginate()
             instances = []
 

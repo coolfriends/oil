@@ -15,6 +15,18 @@ class EC2BarrelTestCase(unittest.TestCase):
 
         return client
 
+    def test_tap_functions_with_describe_instances(self):
+        clients = {
+            'us-east-1': self.client_mock(
+                boto3_describe_instances_paginator_one_field
+            )
+        }
+        barrel = EC2Barrel(clients)
+        tap_return = barrel.tap('describe_instances')
+        describe_instances_return = barrel.describe_instances()
+
+        self.assertEqual(describe_instances_return, tap_return)
+
     def test_describe_instances_returns_only_instances(self):
         clients = {
             'us-east-1': self.client_mock(

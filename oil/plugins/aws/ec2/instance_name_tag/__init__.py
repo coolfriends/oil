@@ -1,5 +1,21 @@
 class InstanceNameTagPlugin():
-    def run(self, data):
+
+    name = 'instance_name_tag'
+    service = 'ec2'
+    provider = 'aws'
+
+    required_api_calls = {
+        'aws': {
+            'ec2': [
+                'describe_instances'
+            ]
+        }
+    }
+
+    def __init__(self, config={}):
+        self.config = config
+
+    def run(self, api_data):
         """
         data is of the form: {
           'us-east-1': [
@@ -16,17 +32,16 @@ class InstanceNameTagPlugin():
                or even InStaNcE NAMe)
         """
         results = []
-
-        for region, region_data in data.items():
-            if not region_data:
+        for region, api_calls in api_data['aws']['ec2'].items():
+            instances = api_calls['describe_instances']
+            if not instances:
                 results.append({
                     'resource': 'None',
                     'region': region,
                     'severity': 0,
                     'message': 'No instances found'
                 })
-
-            for instance in region_data:
+            for instance in instances:
                 instance_id = instance['InstanceId']
                 tags = instance.get('Tags', [])
                 name = None

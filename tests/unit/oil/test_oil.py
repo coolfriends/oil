@@ -9,6 +9,10 @@ class OilTestCase(unittest.TestCase):
         providers = oil.providers
         self.assertEqual(providers, [])
 
+    def test_services_throws_error_with_unsupported_provider(self):
+        oil = Oil()
+        with self.assertRaises(RuntimeError):
+            services = oil.services('unsupported_provider')
 
     def test_loading_plugins_throws_error_if_provider_is_not_registered(self):
         config = {

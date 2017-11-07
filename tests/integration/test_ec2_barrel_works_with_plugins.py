@@ -20,15 +20,26 @@ class EC2BarrelWorksWithPluginsTestCase(unittest.TestCase):
 
     def test_ec2_data_processed_into_desired_results(self):
         plugin = InstanceNameTagPlugin()
-        client = self.client_mock(
-            describe_instances_paginator_with_name_tags
-        )
-        barrel = EC2Barrel(client)
-        instances = barrel.describe_instances()
-        data = {
-            'some-region': instances
+        clients = {
+            'us-east-1': self.client_mock(
+                describe_instances_paginator_with_name_tags
+            )
         }
-        results = plugin.run(data)
+        barrel = EC2Barrel(clients)
+        instances_by_region = barrel.describe_instances()
+
+        # TODO: This object would normally be created by oil
+        api_data = {
+            'aws': {
+                'ec2': {
+                    'us-east-1': {
+                        'describe_instances': instances_by_region['us-east-1']
+                    }
+                }
+            }
+        }
+
+        results = plugin.run(api_data)
         results_keys = list(results[0].keys())
 
         expected = set([
