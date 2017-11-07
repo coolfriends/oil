@@ -21,16 +21,24 @@ class EC2Barrel():
         'sa-east-1'
     ])
 
-    def __init__(self, client=None):
-        self.client = client or boto3.client('ec2')
+    def __init__(self, clients=None):
+        self.clients = clients or self._default_clients()
+
+    def _default_clients(self):
+        for region in self._default_regions:
+            self.clients[region] = boto3.client('ec2', region_name=region)
 
     def describe_instances(self):
-        paginator = self.client.get_paginator('describe_instances')
-        response_iterator = paginator.paginate()
-        instances = []
+        instances_by_region = {}
+        for region, client in self.clients.items():
+            paginator = client.get_paginator('describe_instances')
+            response_iterator = paginator.paginate()
+            instances = []
 
-        for page in response_iterator:
-            for reservation in page['Reservations']:
-                instances.extend(reservation.get('Instances', []))
+            for page in response_iterator:
+                for reservation in page['Reservations']:
+                    instances.extend(reservation.get('Instances', []))
 
-        return instances
+            instances_by_region[region] = instances
+
+        return instances_by_region
