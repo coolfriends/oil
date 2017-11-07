@@ -15,13 +15,28 @@ class EC2BarrelTestCase(unittest.TestCase):
 
         return client
 
+    def test_tap_functions_with_describe_instances(self):
+        clients = {
+            'us-east-1': self.client_mock(
+                boto3_describe_instances_paginator_one_field
+            )
+        }
+        barrel = EC2Barrel(clients)
+        tap_return = barrel.tap('describe_instances')
+        describe_instances_return = barrel.describe_instances()
+
+        self.assertEqual(describe_instances_return, tap_return)
+
     def test_describe_instances_returns_only_instances(self):
-        client = self.client_mock(
-            boto3_describe_instances_paginator_one_field
-        )
-        barrel = EC2Barrel(client)
+        clients = {
+            'us-east-1': self.client_mock(
+                boto3_describe_instances_paginator_one_field
+            )
+        }
+        barrel = EC2Barrel(clients)
 
         results = barrel.describe_instances()
+        results_from_region = results['us-east-1']
 
         expected = [
             {
@@ -49,5 +64,50 @@ class EC2BarrelTestCase(unittest.TestCase):
                 'InstanceId': 'instance8'
             },
         ]
+
+        self.assertEqual(results_from_region, expected)
+
+    def test_describe_instances_empty_with_no_instances(self):
+        fixture = [ # Multiple pages of empty
+            {
+                'Reservations': [
+                    {
+                        'Instances': []
+                    }
+                ]
+            }
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = EC2Barrel(clients)
+
+        results = barrel.describe_instances()
+
+        expected = {
+            'us-east-1': []
+        }
+
+        self.assertEqual(results, expected)
+
+    def test_describe_instances_returns_empty_list_with_no_instances_key(self):
+        fixture = [ # Multiple pages of empty
+            {
+                'Reservations': [
+                    {
+                    }
+                ]
+            }
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = EC2Barrel(clients)
+
+        results = barrel.describe_instances()
+
+        expected = {
+            'us-east-1': []
+        }
 
         self.assertEqual(results, expected)

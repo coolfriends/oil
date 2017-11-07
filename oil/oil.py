@@ -1,8 +1,22 @@
 from oil.plugins.aws.cloudfront import TLSProtocolPlugin
+from oil.plugins.aws.ec2 import InstanceNameTagPlugin
 from oil.barrels.aws import CloudFrontBarrel
-
+from oil.barrels.aws import EC2Barrel
 
 class Oil():
+    supports = {
+        'aws': {
+            'cloudfront': {
+                'tls_protocol': TLSProtocolPlugin
+            },
+            'ec2': {
+                'instance_name_tag': InstanceNameTagPlugin
+            }
+        }
+    }
+    providers = ['aws']
+    services = []
+
     def __init__(self, config={}):
         """
         TODO: Create sensible default configuration
@@ -11,23 +25,63 @@ class Oil():
         self.plugins = []
         self.cached_api_data = {}
         self.scan_data = {}
-
         self._load_plugins()
+
+    def scan(self):
+        self._collect_all_api_data()
+        self._run_plugins()
+
+        # Return a copy of this so the user does not get direct access to saved scan results
+        return self.scan_data.copy()
+
+    @property
+    def providers(self):
+        return list(self.config.keys())
+
+    def services(self, provider):
+        services = self.config.get(provider, {})
+        if not services:
+            raise RuntimeError('Not configured for provider: {}'.format(provider))
+
+    def _supported_providers(self):
+        return list(self.supports.keys())
+
+    def _supported_services(self, provider):
+        services = self.supports.get(provider, {})
+
+        return list(services.keys())
+
 
     def _load_plugins(self):
         """
         TODO: Make adding plugins more dynamic than a large if statement
+        TODO: Log if no plugins are passed in
         """
-        aws_config = self.config.get('aws', {})
-        cloudfront_config = aws_config.get('cloudfront', {})
+        for provider, services in self.config.items():
+            if provider not in self._supported_providers():
+                raise RuntimeError('Unsupported provider: {}'.format(provider))
 
+            for service, service_config in services.items():
+                if service not in self._supported_services(provider):
+                    raise RuntimeError('Unsupported service: {}'.format(service))
 
-        for plugin in cloudfront_config.get('plugins', []):
-            if plugin.get('name', '') == 'tls_protocol':
-                configured_plugin = TLSProtocolPlugin(
-                    plugin.get('config', {})
-                )
-                self.plugins.append(configured_plugin)
+                for plugin in service_config.get('plugins', []):
+                    plugin_name = plugin.get('name', '')
+                    if plugin_name == 'tls_protocol':
+                        configured_plugin = TLSProtocolPlugin(
+                            plugin.get('config', {})
+                        )
+                    elif plugin_name == 'instance_name_tag':
+                        configured_plugin = InstanceNameTagPlugin(
+                            plugin.get('config', {})
+                        )
+                    else:
+                        raise RuntimeError((
+                            'The nested call is not implemented: '
+                            '{}:{}:{}'.format(provider, service, plugin_name)
+                        ))
+
+                    self.plugins.append(configured_plugin)
 
     def _collect_all_api_data(self):
         unique_api_calls = self._unique_api_calls()
@@ -55,6 +109,26 @@ class Oil():
                 barrel = CloudFrontBarrel()
                 data = barrel.tap(call)
                 self.cached_api_data[provider][service][region][call] = data
+            elif service == 'ec2':
+                if not aws_data.get('ec2'):
+                    aws_data['ec2'] = {}
+
+                ec2_data = aws_data['ec2']
+
+                barrel = EC2Barrel()
+                data_by_region = barrel.tap(call)
+
+                # Put calls in correct region
+                for region, call_data in data_by_region.items():
+                    if not ec2_data.get(region, {}):
+                        ec2_data[region] = {}
+                    ec2_data[region][call] = call_data
+        else:
+            raise RuntimeError(
+                'This nested call {}:{}:{} is not implemented.'.format(
+                    provider, service, call
+                )
+            )
 
 
     def _unique_api_calls(self):
@@ -91,10 +165,3 @@ class Oil():
 
         service_data = provider_data[service]
         service_data[plugin_name] = results
-
-
-    def scan(self):
-        self._collect_all_api_data()
-        self._run_plugins()
-        # Return a copy of this so the user does not get direct access to saved scan results
-        return self.scan_data.copy()
