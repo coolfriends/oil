@@ -14,7 +14,7 @@ import unittest
 from oil import Oil
 
 
-@unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", "Skipping this test on Travis CI.")
+@unittest.skipIf(os.environ.get('OIL_FUNCTIONAL_TESTS', 'False') != 'True', "Skipping functional tests")
 class ScanningTestCase(unittest.TestCase):
     def test_user_can_scan_with_one_plugin_using_dictionary_configuration(self):
         test_configuration = {

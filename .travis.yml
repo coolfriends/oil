@@ -11,4 +11,4 @@ install:
   - pip install -r requirements.dev.txt
 
 script:
-  - invoke test
+  - invoke test --no-functional

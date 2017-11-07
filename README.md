@@ -26,6 +26,15 @@ Run the tests
 invoke test
 ```
 
+Run without functional tests
+```bash
+invoke test --no-functional
+```
+
+Note: Running tests sets the OIL_FUNCTIONAL_TESTS env variable in your shell.
+
+
+
 ## Todo
 * Decide on documentation format and write documentation using that format
 * Write an invoke command to build documentation & clean up if necessary 
