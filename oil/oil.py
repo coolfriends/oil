@@ -22,9 +22,9 @@ class Oil():
         TODO: Create sensible default configuration
         """
         self.config = config;
-        self.plugins = []
         self.cached_api_data = {}
         self.scan_data = {}
+        self.plugins = []
         self._load_plugins()
 
     def scan(self):
@@ -35,6 +35,9 @@ class Oil():
         return self.scan_data.copy()
 
     def configure(self, config):
+        self.config = config
+        self._load_plugins()
+
 
     @property
     def providers(self):
@@ -59,6 +62,7 @@ class Oil():
         TODO: Make adding plugins more dynamic than a large if statement
         TODO: Log if no plugins are passed in
         """
+        self.plugins = []
         for provider, services in self.config.items():
             if provider not in self._supported_providers():
                 raise RuntimeError('Unsupported provider: {}'.format(provider))

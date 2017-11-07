@@ -9,14 +9,14 @@ class OilTestCase(unittest.TestCase):
         providers = oil.providers
         self.assertEqual(providers, [])
 
-    def test_add_config_post_initialization(self):
+    def test_add_config_post_initialization_configures_plugins(self):
         oil = Oil()
         config = {
             'aws': {
                 'cloudfront': {
                     'plugins': [
                         {
-                            'name': 'insecure_protocols'
+                            'name': 'tls_protocol'
                         }
                     ]
                 }
@@ -26,7 +26,7 @@ class OilTestCase(unittest.TestCase):
         self.assertEqual(oil.config, config)
 
         plugin = oil.plugins[0]
-        self.assertEqual(plugin.name, 'insecure_protocols')
+        self.assertEqual(plugin.name, 'tls_protocol')
 
     def test_services_throws_error_with_unsupported_provider(self):
         oil = Oil()
