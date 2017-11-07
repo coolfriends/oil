@@ -15,7 +15,7 @@ from oil import Oil
 
 
 class ScanningTestCase(unittest.TestCase):
-
+    @unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", "Skipping this test on Travis CI.")
     def test_user_can_scan_with_one_plugin_using_dictionary_configuration(self):
         test_configuration = {
             'aws': {
