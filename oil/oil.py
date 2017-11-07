@@ -34,6 +34,8 @@ class Oil():
         # Return a copy of this so the user does not get direct access to saved scan results
         return self.scan_data.copy()
 
+    def configure(self, config):
+
     @property
     def providers(self):
         return list(self.config.keys())

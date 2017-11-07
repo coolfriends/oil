@@ -14,12 +14,19 @@ class OilTestCase(unittest.TestCase):
         config = {
             'aws': {
                 'cloudfront': {
-                    'plugins': []
+                    'plugins': [
+                        {
+                            'name': 'insecure_protocols'
+                        }
+                    ]
                 }
             }
         }
         oil.configure(config)
         self.assertEqual(oil.config, config)
+
+        plugin = oil.plugins[0]
+        self.assertEqual(plugin.name, 'insecure_protocols')
 
     def test_services_throws_error_with_unsupported_provider(self):
         oil = Oil()
