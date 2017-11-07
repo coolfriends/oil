@@ -6,6 +6,7 @@ from oil import Oil
 
 
 @unittest.skipIf("TRAVIS" in os.environ and os.environ["TRAVIS"] == "true", "Skipping this test on Travis CI.")
+@unittest.skipIf(os.environ.get('OIL_FUNCTIONAL_TESTS', 'False') != 'True', "Skipping functional tests")
 class EC2ScanningTestCase(unittest.TestCase):
     def test_oil_can_scan_for_name_tag_compliance(self):
         config = {
