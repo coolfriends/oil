@@ -32,19 +32,31 @@ class HTTPSPlugin():
 
         for distribution in distributions:
             resource_arn = distribution['ARN']
-            protocol_version = distribution['ViewerCertificate']['MinimumProtocolVersion']
-            if protocol_version == 'SSLv3':
+            viewer_policy = distribution.get('ViewerProtocolPolicy')
+
+            if not viewer_policy:
+                severity = 3
+                message = 'No viewer policy found for this distribution'
+            elif viewer_policy == 'allow-all':
                 severity = 2
-                message = '{} is insecure'.format(protocol_version)
-            elif protocol_version in ['TLSv1', 'TLSv1_2016', 'TLSv1.2_2018']:
-                severity = 1
-                message = '{} is not considered best practice'.format(protocol_version)
-            elif protocol_version == 'TLSv1.1_2016':
+                message = 'Distribution should only allow HTTPS traffic'
+            elif viewer_policy == 'redirect-to-https':
                 severity = 0
-                message = '{} is secure and considered best practice'.format(protocol_version)
+                message = (
+                    'Distribution is properly configured to redirect HTTP '
+                    'traffic to HTTPS'
+                )
+            elif viewer_policy == 'https-only':
+                severity = 0
+                message = (
+                    'Distribution is properly configured to only allow HTTPS '
+                    'traffic'
+                )
             else:
-                severity = '3'
-                message = '{} is an unexpected protocol'.format(protocol_version)
+                severity = 3
+                message = (
+                    'Unsupported ViewerProtocolPolicy of {}'
+                ).format(viewer_policy)
 
             results.append({
                 'resource': resource_arn,
