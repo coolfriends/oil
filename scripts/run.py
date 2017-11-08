@@ -1,15 +1,15 @@
 import sys
 import os
-import inspect
 import json
+
+from pathlib import Path
 
 try:
     from oil import Oil
 except ImportError: # If module not installed with pip
-    currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    parentdir = os.path.dirname(currentdir)
-    sys.path.insert(0,parentdir)
+    oil_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, oil_path)
     from oil import Oil
 
 oil = Oil()
-print(json.dumps(oil.scan(), indent=4))
+print(json.dumps(oil.scan(), indent=2))
