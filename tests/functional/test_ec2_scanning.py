@@ -29,3 +29,24 @@ class EC2ScanningTestCase(unittest.TestCase):
 
         self.assertNotEqual(plugin_results, [])
 
+    def test_oil_can_scan_for_public_ip_on_instances(self):
+        config = {
+            'aws': {
+                'ec2': {
+                    'plugins': [
+                        {
+                            'name': 'public_ip'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        ec2_results = aws_results.get('ec2', {})
+        plugin_results = ec2_results.get('public_ip', [])
+
+        self.assertNotEqual(plugin_results, [])
