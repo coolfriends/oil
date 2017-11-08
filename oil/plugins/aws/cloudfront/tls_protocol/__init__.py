@@ -33,8 +33,12 @@ class TLSProtocolPlugin():
 
         for distribution in distributions:
             resource_arn = distribution['ARN']
-            protocol_version = distribution['ViewerCertificate']['MinimumProtocolVersion']
-            if protocol_version == 'SSLv3':
+            certificate = distribution.get('ViewerCertificate', {})
+            protocol_version = certificate.get('MinimumProtocolVersion', '')
+            if not protocol_version:
+                severity = 3
+                message = 'No protocol version found'
+            elif protocol_version == 'SSLv3':
                 severity = 2
                 message = '{} is insecure'.format(protocol_version)
             elif protocol_version in ['TLSv1', 'TLSv1_2016', 'TLSv1.2_2018']:
@@ -44,7 +48,7 @@ class TLSProtocolPlugin():
                 severity = 0
                 message = '{} is secure and considered best practice'.format(protocol_version)
             else:
-                severity = '3'
+                severity = 3
                 message = '{} is an unexpected protocol'.format(protocol_version)
 
             results.append({
