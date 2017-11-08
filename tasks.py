@@ -1,14 +1,14 @@
 ## https://github.com/pyinvoke/invoke
 
 import unittest
+import os
 from invoke import task
 
 @task
-def test(ctx, no_functional=True):
+def test(ctx, no_functional=False):
     if no_functional:
-        ctx.run('export OIL_FUNCTIONAL_TESTS=False')
+        os.environ['OIL_FUNCTIONAL_TESTS'] = str(False)
     else:
-        ctx.run('export OIL_FUNCTIONAL_TESTS=True')
+        os.environ['OIL_FUNCTIONAL_TESTS'] = str(True)
 
-    command = 'python -m unittest'
-    ctx.run(command)
+    ctx.run('python -m unittest')

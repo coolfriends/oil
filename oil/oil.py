@@ -1,5 +1,6 @@
 from oil.plugins.aws.cloudfront import TLSProtocolPlugin
 from oil.plugins.aws.ec2 import InstanceNameTagPlugin
+from oil.plugins.aws.ec2 import PublicIpPlugin
 from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
 
@@ -18,6 +19,9 @@ class Oil():
                     {
                         'name': 'instance_name_tag',
                     },
+                    {
+                        'name': 'public_ip',
+                    }
                 ]
             }
         }
@@ -29,7 +33,8 @@ class Oil():
                 'tls_protocol': TLSProtocolPlugin
             },
             'ec2': {
-                'instance_name_tag': InstanceNameTagPlugin
+                'instance_name_tag': InstanceNameTagPlugin,
+                'public_ip': PublicIpPlugin
             }
         }
     }
@@ -98,6 +103,10 @@ class Oil():
                         )
                     elif plugin_name == 'instance_name_tag':
                         configured_plugin = InstanceNameTagPlugin(
+                            plugin.get('config', {})
+                        )
+                    elif plugin_name == 'public_ip':
+                        configured_plugin = PublicIpPlugin(
                             plugin.get('config', {})
                         )
                     else:
