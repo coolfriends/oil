@@ -17,15 +17,6 @@ class InstanceNameTagPlugin():
 
     def run(self, api_data):
         """
-        data is of the form: {
-          'us-east-1': [
-             ... #Instances
-          ],
-          'us-east-2': [
-             ... #Instances
-          ]...
-          # Other regions
-        }
         TODO: Update to new documentation format
         TODO: Allow user to configure this plugin to use custom tag for Name
               (incase the user has a system set up where they use InstanceName,
@@ -51,12 +42,12 @@ class InstanceNameTagPlugin():
 
                 if name:
                     severity = 0
-                    message = 'Instance has instance name of {}'.format(
+                    message = 'Instance has a Name tag of {}'.format(
                         name
                     )
                 else:
                     severity = 1
-                    message = 'Instance does not have an instance tag'
+                    message = 'Instance does not have a Name tag'
 
                 results.append({
                     'resource': instance_id,
