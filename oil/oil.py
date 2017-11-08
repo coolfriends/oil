@@ -4,6 +4,25 @@ from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
 
 class Oil():
+    default_config = {
+        'aws': {
+            'cloudfront': {
+                'plugins': [
+                    {
+                        'name': 'tls_protocol',
+                    },
+                ]
+            },
+            'ec2': {
+                'plugins': [
+                    {
+                        'name': 'instance_name_tag',
+                    },
+                ]
+            }
+        }
+    }
+
     supports = {
         'aws': {
             'cloudfront': {
@@ -14,17 +33,15 @@ class Oil():
             }
         }
     }
-    providers = ['aws']
-    services = []
 
     def __init__(self, config={}):
         """
         TODO: Create sensible default configuration
         """
-        self.config = config;
-        self.plugins = []
+        self.config = config or self.default_config;
         self.cached_api_data = {}
         self.scan_data = {}
+        self.plugins = []
         self._load_plugins()
 
     def scan(self):
@@ -34,14 +51,21 @@ class Oil():
         # Return a copy of this so the user does not get direct access to saved scan results
         return self.scan_data.copy()
 
+    def configure(self, config):
+        self.config = config
+        self._load_plugins()
+
     @property
     def providers(self):
         return list(self.config.keys())
 
     def services(self, provider):
-        services = self.config.get(provider, {})
+        services_dict = self.config.get(provider, {})
+        services = [k for k in services_dict.keys()]
         if not services:
             raise RuntimeError('Not configured for provider: {}'.format(provider))
+
+        return services
 
     def _supported_providers(self):
         return list(self.supports.keys())
@@ -57,6 +81,7 @@ class Oil():
         TODO: Make adding plugins more dynamic than a large if statement
         TODO: Log if no plugins are passed in
         """
+        self.plugins = []
         for provider, services in self.config.items():
             if provider not in self._supported_providers():
                 raise RuntimeError('Unsupported provider: {}'.format(provider))

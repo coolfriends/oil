@@ -4,13 +4,43 @@ from oil import Oil
 
 class OilTestCase(unittest.TestCase):
 
-    def test_providers_is_empty_with_no_plugins(self):
+    def test_providers_are_default_with_no_config_passed(self):
         oil = Oil()
         providers = oil.providers
-        self.assertEqual(providers, [])
+        self.assertEqual(providers, ['aws'])
+
+        self.assertCountEqual(oil.services('aws'), ['ec2', 'cloudfront'])
+
+    def test_add_config_post_initialization_configures_plugins(self):
+        oil = Oil()
+        config = {
+            'aws': {
+                'cloudfront': {
+                    'plugins': [
+                        {
+                            'name': 'tls_protocol'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil.configure(config)
+        self.assertEqual(oil.config, config)
+
+        plugin = oil.plugins[0]
+        self.assertEqual(plugin.name, 'tls_protocol')
 
     def test_services_throws_error_with_unsupported_provider(self):
         oil = Oil()
+        with self.assertRaises(RuntimeError):
+            services = oil.services('unsupported_provider')
+
+    def test_services_empty_with_no_services(self):
+        config = {
+            'aws': {}
+        }
+        oil = Oil(config)
         with self.assertRaises(RuntimeError):
             services = oil.services('unsupported_provider')
 
