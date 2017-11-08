@@ -20,6 +20,11 @@ Run the default scan and print to console
 python scripts/run.py
 ```
 
+Specify csv output
+```bash
+python scripts/run.py --output csv
+```
+
 ## Contributing
 Create your branch with a descriptive name, create a virtual env, and download dependencies:
 ```bash
