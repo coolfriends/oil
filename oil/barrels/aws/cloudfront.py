@@ -1,22 +1,35 @@
 import boto3
 
 class CloudFrontBarrel():
-    def __init__(self, client=None):
-        self.client = client or boto3.client('cloudfront')
+    _default_regions = set([
+        'aws-global'
+    ])
+
+    def __init__(self, clients=None):
+        self.clients = clients or self._default_clients()
+
+    def _default_clients(self):
+        clients = {}
+        for region in self._default_regions:
+            clients[region] = boto3.client('cloudfront', region_name=region)
+        return clients
 
     def tap(self, call):
         if call == 'list_distributions':
             return self.list_distributions()
         else:
-            # Should throw an error
-            return []
+            raise RuntimeError('The api call {} is not implemented'.format(call))
 
     def list_distributions(self):
-        paginator = self.client.get_paginator('list_distributions')
-        response_iterator = paginator.paginate()
-        items_list = []
+        distributions_by_region = {}
+        for region, client in self.clients.items():
+            paginator = self.clients['aws-global'].get_paginator('list_distributions')
+            response_iterator = paginator.paginate()
+            distributions = []
 
-        for page in response_iterator:
-            items_list.extend(page['DistributionList'].get('Items', []))
+            for page in response_iterator:
+                distributions.extend(page['DistributionList'].get('Items', []))
 
-        return items_list
+            distributions_by_region[region] = distributions
+
+        return distributions_by_region

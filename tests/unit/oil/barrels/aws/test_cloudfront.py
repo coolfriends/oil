@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from oil.barrels.aws import CloudFrontBarrel
 from tests.fixtures.aws.cloudfront import response_iterator_fixture
 
@@ -15,38 +15,80 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
 
         return client
 
-    def test_list_distributions_returns_only_distributions(self):
-        client = self.client_mock(response_iterator_fixture)
-        barrel = CloudFrontBarrel(client)
+    def test_has_correct_default_regions(self):
+        default_regions = set([
+            'aws-global'
+        ])
+        barrel = CloudFrontBarrel([])
+        self.assertEqual(default_regions, barrel._default_regions)
 
-        results = barrel.list_distributions()
+    @patch("boto3.client")
+    def test_default_clients(self, mock_client):
+        mock_client.return_value = MagicMock()
+        barrel = CloudFrontBarrel()
 
-        expected = [
+        for region, client in barrel.clients.items():
+            self.assertIn(region, barrel._default_regions)
+
+    def test_tap_functions_with_list_distributions(self):
+        fixture = [
             {
-                "ARN": "some arn",
-                "ViewerCertificate": {
-                    "MinimumProtocolVersion": 'example value'
-                }
-            },
-            {
-                "ARN": "another arn",
-                "ViewerCertificate": {
-                    "MinimumProtocolVersion": 'test value'
-                }
-            },
-            {
-                "ARN": "test arn",
-                "ViewerCertificate": {
-                    "MinimumProtocolVersion": 'some value'
-                }
-            },
-            {
-                "ARN": "example arn",
-                "ViewerCertificate": {
-                    "MinimumProtocolVersion": 'another value'
+                'DistributionList': {
+                    'Items': []
                 }
             }
         ]
+        clients = {
+            'aws-global': self.client_mock(fixture)
+        }
+        barrel = CloudFrontBarrel(clients)
+        tap_return = barrel.tap('list_distributions')
+        list_distributions_return = barrel.list_distributions()
+
+        self.assertEqual(list_distributions_return, tap_return)
+
+    def test_tap_throws_error_with_unsupported_call(self):
+        barrel = CloudFrontBarrel([])
+
+        with self.assertRaises(RuntimeError):
+            tap_return = barrel.tap('unsupported_call')
+
+    def test_list_distributions_returns_only_distributions(self):
+        clients = {
+            'aws-global': self.client_mock(response_iterator_fixture)
+        }
+        barrel = CloudFrontBarrel(clients)
+
+        results = barrel.list_distributions()
+
+        expected = {
+            'aws-global': [
+                {
+                    "ARN": "some arn",
+                    "ViewerCertificate": {
+                        "MinimumProtocolVersion": 'example value'
+                    }
+                },
+                {
+                    "ARN": "another arn",
+                    "ViewerCertificate": {
+                        "MinimumProtocolVersion": 'test value'
+                    }
+                },
+                {
+                    "ARN": "test arn",
+                    "ViewerCertificate": {
+                        "MinimumProtocolVersion": 'some value'
+                    }
+                },
+                {
+                    "ARN": "example arn",
+                    "ViewerCertificate": {
+                        "MinimumProtocolVersion": 'another value'
+                    }
+                }
+            ]
+        }
 
         self.assertEqual(results, expected)
 
@@ -58,12 +100,16 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
                 }
             }
         ]
-        client = self.client_mock(fixture)
-        barrel = CloudFrontBarrel(client)
+        clients = {
+            'aws-global': self.client_mock(fixture)
+        }
+        barrel = CloudFrontBarrel(clients)
 
         results = barrel.list_distributions()
 
-        expected = []
+        expected = {
+            'aws-global': []
+        }
 
         self.assertEqual(results, expected)
 
@@ -74,11 +120,15 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
                 }
             }
         ]
-        client = self.client_mock(fixture)
-        barrel = CloudFrontBarrel(client)
+        clients = {
+            'aws-global': self.client_mock(fixture)
+        }
+        barrel = CloudFrontBarrel(clients)
 
         results = barrel.list_distributions()
 
-        expected = []
+        expected = {
+            'aws-global': []
+        }
 
         self.assertEqual(results, expected)
