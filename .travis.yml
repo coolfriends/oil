@@ -12,5 +12,5 @@ install:
 
 script:
   - invoke test --no-functional
-  - coverage run --source=oil -m unittest tests
+  - coverage run --source=oil -m unittest discover -s tests
   - coverage report
