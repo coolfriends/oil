@@ -2,8 +2,6 @@ import sys
 import os
 import json
 
-from pathlib import Path
-
 try:
     from oil import Oil
 except ImportError: # If module not installed with pip
