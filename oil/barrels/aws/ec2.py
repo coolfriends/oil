@@ -33,6 +33,8 @@ class EC2Barrel():
     def tap(self, call):
         if call == 'describe_instances':
             return self.describe_instances()
+        if call == 'describe_security_groups':
+            return self.describe_security_groups()
         else:
             raise RuntimeError('The api call {} is not implemented'.format(call))
 
@@ -51,3 +53,18 @@ class EC2Barrel():
             instances_by_region[region] = instances
 
         return instances_by_region
+
+    def describe_security_groups(self):
+        security_groups_by_region = {}
+        for region, client in self.clients.items():
+            paginator = client.get_paginator('describe_security_groups')
+
+            response_iterator = paginator.paginate()
+            groups = []
+
+            for page in response_iterator:
+                groups.extend(page.get('SecurityGroups', []))
+
+            security_groups_by_region[region] = groups
+
+        return security_groups_by_region
