@@ -11,4 +11,5 @@ install:
   - pip install -r requirements.dev.txt
 
 script:
-  - invoke test --no-functional
+  - coverage run --source=oil -m unittest discover -s tests
+  - coverage report
