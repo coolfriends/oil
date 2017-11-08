@@ -14,6 +14,12 @@ This project is based on some specific design goals:
 * Results are returned in a simple to navigate Python dictionary
 * Support for Azure and Google Cloud
 
+## Running
+Run the default scan and print to console
+```bash
+python scripts/run.py
+```
+
 ## Contributing
 Create your branch with a descriptive name, create a virtual env, and download dependencies:
 ```bash

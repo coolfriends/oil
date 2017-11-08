@@ -9,6 +9,8 @@ class OilTestCase(unittest.TestCase):
         providers = oil.providers
         self.assertEqual(providers, ['aws'])
 
+        self.assertCountEqual(oil.services('aws'), ['ec2', 'cloudfront'])
+
     def test_add_config_post_initialization_configures_plugins(self):
         oil = Oil()
         config = {

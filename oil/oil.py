@@ -60,9 +60,12 @@ class Oil():
         return list(self.config.keys())
 
     def services(self, provider):
-        services = self.config.get(provider, {})
+        services_dict = self.config.get(provider, {})
+        services = [k for k in services_dict.keys()]
         if not services:
             raise RuntimeError('Not configured for provider: {}'.format(provider))
+
+        return services
 
     def _supported_providers(self):
         return list(self.supports.keys())
