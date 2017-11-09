@@ -39,3 +39,25 @@ class ScanningTestCase(unittest.TestCase):
                 'needs to be implemented'
             )
         )
+
+    def test_oil_can_scan_for_https_usage(self):
+        config = {
+            'aws': {
+                'cloudfront': {
+                    'plugins': [
+                        {
+                            'name': 'https'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        cloudfront_results = aws_results.get('cloudfront', {})
+        plugin_results = cloudfront_results.get('https', [])
+
+        self.assertNotEqual(plugin_results, [])
