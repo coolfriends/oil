@@ -97,23 +97,12 @@ class Oil():
 
                 for plugin in service_config.get('plugins', []):
                     plugin_name = plugin.get('name', '')
-                    if plugin_name == 'tls_protocol':
-                        configured_plugin = TLSProtocolPlugin(
-                            plugin.get('config', {})
-                        )
-                    elif plugin_name == 'instance_name_tag':
-                        configured_plugin = InstanceNameTagPlugin(
-                            plugin.get('config', {})
-                        )
-                    elif plugin_name == 'public_ip':
-                        configured_plugin = PublicIpPlugin(
-                            plugin.get('config', {})
-                        )
-                    else:
-                        raise RuntimeError((
-                            'The nested call is not implemented: '
-                            '{}:{}:{}'.format(provider, service, plugin_name)
-                        ))
+                    try:
+                        class_name = self.supports[provider][service][plugin_name]
+                    except KeyError as e:
+                        message = 'Unsupported plugin: {}'.format(plugin_name)
+                        raise RuntimeError(message) from e
+                    configured_plugin = class_name(plugin.get('config', {}))
 
                     self.plugins.append(configured_plugin)
 
