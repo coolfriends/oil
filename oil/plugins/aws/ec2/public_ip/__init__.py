@@ -72,7 +72,6 @@ class PublicIpPlugin():
 
                             })
 
-
                 if not found:
                     results.append({
                         'resource': instance_id,
