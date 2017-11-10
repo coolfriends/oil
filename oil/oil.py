@@ -1,5 +1,6 @@
 from oil.plugins.aws.cloudfront import TLSProtocolPlugin
 from oil.plugins.aws.cloudfront import HTTPSPlugin
+from oil.plugins.aws.cloudfront import S3OriginAccessIdentityPlugin
 from oil.plugins.aws.ec2 import InstanceNameTagPlugin
 from oil.plugins.aws.ec2 import PublicIpPlugin
 from oil.barrels.aws import CloudFrontBarrel
@@ -16,6 +17,9 @@ class Oil():
                     {
                         'name': 'https'
                     },
+                    {
+                        'name': 's3_origin_access_identity'
+                    }
                 ]
             },
             'ec2': {
@@ -35,7 +39,8 @@ class Oil():
         'aws': {
             'cloudfront': {
                 'tls_protocol': TLSProtocolPlugin,
-                'https': HTTPSPlugin
+                'https': HTTPSPlugin,
+                's3_origin_access_identity': S3OriginAccessIdentityPlugin,
             },
             'ec2': {
                 'instance_name_tag': InstanceNameTagPlugin,

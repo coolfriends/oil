@@ -61,3 +61,25 @@ class ScanningTestCase(unittest.TestCase):
         plugin_results = cloudfront_results.get('https', [])
 
         self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_s3_origin_access_identity(self):
+        config = {
+            'aws': {
+                'cloudfront': {
+                    'plugins': [
+                        {
+                            'name': 's3_origin_access_identity'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        cloudfront_results = aws_results.get('cloudfront', {})
+        plugin_results = cloudfront_results.get('s3_origin_access_identity', [])
+
+        self.assertNotEqual(plugin_results, [])
