@@ -12,7 +12,6 @@ class HTTPSPluginTestCase(unittest.TestCase):
                         'list_distributions': [
                             {
                                 'ARN': 'arn1',
-                                'ViewerProtocolPolicy': 'allow-all'
                             }
                         ]
                     }
@@ -40,7 +39,6 @@ class HTTPSPluginTestCase(unittest.TestCase):
                         'list_distributions': [
                             {
                                 'ARN': 'arn1',
-                                'ViewerProtocolPolicy': 'allow-all'
                             }
                         ]
                     }
@@ -156,7 +154,9 @@ class HTTPSPluginTestCase(unittest.TestCase):
                         'list_distributions': [
                             {
                                 'ARN': 'anarn',
-                                'ViewerProtocolPolicy': 'unsupported-policy'
+                                'DefaultCacheBehavior': {
+                                    'ViewerProtocolPolicy': 'unsupported-policy'
+                                }
                             }
                         ]
                     }
@@ -183,7 +183,9 @@ class HTTPSPluginTestCase(unittest.TestCase):
                         'list_distributions': [
                             {
                                 'ARN': 'anarn',
-                                'ViewerProtocolPolicy': 'allow-all'
+                                'DefaultCacheBehavior': {
+                                    'ViewerProtocolPolicy': 'allow-all'
+                                }
                             }
                         ]
                     }
@@ -210,7 +212,9 @@ class HTTPSPluginTestCase(unittest.TestCase):
                         'list_distributions': [
                             {
                                 'ARN': 'anarn',
-                                'ViewerProtocolPolicy': 'redirect-to-https'
+                                'DefaultCacheBehavior': {
+                                    'ViewerProtocolPolicy': 'redirect-to-https'
+                                }
                             }
                         ]
                     }
@@ -240,7 +244,9 @@ class HTTPSPluginTestCase(unittest.TestCase):
                         'list_distributions': [
                             {
                                 'ARN': 'anarn',
-                                'ViewerProtocolPolicy': 'https-only'
+                                'DefaultCacheBehavior': {
+                                    'ViewerProtocolPolicy': 'https-only'
+                                }
                             }
                         ]
                     }

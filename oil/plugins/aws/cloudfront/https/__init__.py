@@ -32,7 +32,8 @@ class HTTPSPlugin():
 
         for distribution in distributions:
             resource_arn = distribution['ARN']
-            viewer_policy = distribution.get('ViewerProtocolPolicy')
+            cache_behavior = distribution.get('DefaultCacheBehavior', {})
+            viewer_policy = cache_behavior.get('ViewerProtocolPolicy', '')
 
             if not viewer_policy:
                 severity = 3
