@@ -62,7 +62,7 @@ class ScanningTestCase(unittest.TestCase):
 
         self.assertNotEqual(plugin_results, [])
 
-    def test_oil_can_scan_for_https_usage(self):
+    def test_oil_can_scan_for_s3_origin_access_identity(self):
         config = {
             'aws': {
                 'cloudfront': {
