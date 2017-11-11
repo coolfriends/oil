@@ -49,6 +49,13 @@ class Oil():
         }
     }
 
+    available_barrels = {
+        'aws': {
+            'cloudfront': CloudFrontBarrel,
+            'ec2': EC2Barrel,
+        }
+    }
+
     def __init__(self, config={}):
         """
         TODO: Create sensible default configuration
@@ -135,12 +142,28 @@ class Oil():
                 for api_call in api_calls:
                     self._collect_api_data(provider, service, api_call)
 
+    def get_barrel(self, provider, service):
+        for provider_name, services in self.available_barrels.items():
+            for service_name, barrel in services.items():
+                if provider == provider_name:
+                    if service == service_name:
+                        return barrel
+
+        message = 'Barrel does not exist for Provider: {} Service: {}'.format(
+            provider,
+            service,
+            )
+
+        raise RuntimeError(message)
+
     def _collect_api_data(self, provider, service, call):
         if provider == 'aws':
             if not self.cached_api_data.get('aws'):
                 self.cached_api_data['aws'] = {}
 
             aws_data = self.cached_api_data['aws']
+            # barrel = self.get_barrel(provider, service)
+
             if service == 'cloudfront':
                 if not aws_data.get('cloudfront'):
                     aws_data['cloudfront'] = {}

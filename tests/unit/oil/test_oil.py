@@ -1,6 +1,8 @@
 import unittest
 
 from oil import Oil
+from oil.barrels.aws import CloudFrontBarrel
+
 
 class OilTestCase(unittest.TestCase):
 
@@ -83,3 +85,38 @@ class OilTestCase(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             oil = Oil(config)
+
+    def test_get_barrel_maps_cloudfront_to_correct_barrel(self):
+        config = {
+            'aws': {
+                'cloudfront': {
+                    'plugins': [
+                        {
+                            'name': 'tls_protocol'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        barrel = oil.get_barrel('aws', 'cloudfront')
+
+        self.assertEqual(barrel, CloudFrontBarrel)
+
+    def test_get_barrel_raises_runtime_error_on_fail(self):
+        config = {
+            'aws': {
+                'cloudfront': {
+                    'plugins': [
+                        {
+                            'name': 'tls_protocol'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        with self.assertRaises(RuntimeError):
+            barrel = oil.get_barrel('aws', 'not_a_service')
