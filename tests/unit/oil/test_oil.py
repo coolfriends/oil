@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch, MagicMock
 
 from oil import Oil
 from oil.barrels.aws import CloudFrontBarrel
@@ -102,7 +103,7 @@ class OilTestCase(unittest.TestCase):
         oil = Oil(config)
         barrel = oil.get_barrel('aws', 'cloudfront')
 
-        self.assertEqual(barrel, CloudFrontBarrel)
+        self.assertIsInstance(barrel, CloudFrontBarrel)
 
     def test_get_barrel_raises_runtime_error_on_fail(self):
         config = {
@@ -120,3 +121,25 @@ class OilTestCase(unittest.TestCase):
         oil = Oil(config)
         with self.assertRaises(RuntimeError):
             barrel = oil.get_barrel('aws', 'not_a_service')
+
+    @patch('oil.Oil.get_barrel')
+    def test_collect_api_data_organizes_data_correctly(self, get_barrel_mock):
+        barrel_mock = MagicMock()
+        barrel_mock.tap.return_value = {
+            'any_region': []
+        }
+        get_barrel_mock.return_value = barrel_mock
+
+        expected = {
+            'aws': {
+                'cloudfront': {
+                    'any_region': {
+                        'list_distributions': []
+                    }
+                }
+            }
+        }
+
+        oil = Oil()
+        oil._collect_api_data('aws', 'cloudfront', 'list_distributions')
+        self.assertEqual(oil.cached_api_data, expected)
