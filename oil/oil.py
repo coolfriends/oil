@@ -177,16 +177,15 @@ class Oil():
     def _unique_api_calls(self):
         unique_api_calls = {}
         for plugin in self.plugins:
-            for provider, services in plugin.required_api_calls.items():
+            for requirement, [provider, service, call] in plugin.requirements:
                 if provider not in unique_api_calls.keys():
                     unique_api_calls[provider] = {}
 
-                for service, api_calls in services.items():
-                    if service not in unique_api_calls[provider].keys():
-                        unique_api_calls[provider][service] = set()
+                if service not in unique_api_calls[provider].keys():
+                    unique_api_calls[provider][service] = set()
 
-                    for api_call in api_calls:
-                        unique_api_calls[provider][service].add(api_call)
+                for api_call in api_calls:
+                    unique_api_calls[provider][service].add(api_call)
         return unique_api_calls
 
     def _run_plugins(self):

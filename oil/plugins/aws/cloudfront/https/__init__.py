@@ -1,29 +1,25 @@
-class HTTPSPlugin():
+from oil.plugins import Plugin
+
+
+class HTTPSPlugin(Plugin):
     name = 'https'
     provider = 'aws'
     service = 'cloudfront'
 
-    required_api_calls = {
-        'aws': {
-            'cloudfront': [
-                'list_distributions'
-            ]
-        }
+    requirements = {
+        'distributions': ['aws', 'cloudfront', 'list_distributions']
     }
 
-    def __init__(self, config={}):
-        """
-        TODO: Set up sensible default config
-        TODO: Set up configurable variables
-        """
-        self.config = config
 
     def run(self, api_data):
-        results = []
-        distributions = api_data['aws']['cloudfront']['aws-global']['list_distributions']
+        # Reset the results list for this plugin
+        self.results = []
+
+        requirements = self.collect_requirements(api_data)
+        distributions = requirements['distributions']['aws-global']
 
         if not distributions:
-            results.append({
+            self.results.append({
                 'resource': 'None',
                 'region': 'aws-global',
                 'severity': 0,
@@ -59,11 +55,11 @@ class HTTPSPlugin():
                     'Unsupported ViewerProtocolPolicy of {}'
                 ).format(viewer_policy)
 
-            results.append({
+            self.results.append({
                 'resource': resource_arn,
                 'region': 'aws-global',
                 'severity': severity,
                 'message': message
             })
 
-        return results
+        return self.results

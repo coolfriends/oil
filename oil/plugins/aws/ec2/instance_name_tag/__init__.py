@@ -1,19 +1,15 @@
-class InstanceNameTagPlugin():
+from oil.plugins import Plugin
+
+
+class InstanceNameTagPlugin(Plugin):
 
     name = 'instance_name_tag'
     service = 'ec2'
     provider = 'aws'
 
-    required_api_calls = {
-        'aws': {
-            'ec2': [
-                'describe_instances'
-            ]
-        }
+    requirements = {
+        'instances': ['aws', 'ec2', 'describe_instances']
     }
-
-    def __init__(self, config={}):
-        self.config = config
 
     def run(self, api_data):
         """
@@ -22,11 +18,14 @@ class InstanceNameTagPlugin():
               (incase the user has a system set up where they use InstanceName,
                or even InStaNcE NAMe)
         """
-        results = []
-        for region, api_calls in api_data['aws']['ec2'].items():
-            instances = api_calls['describe_instances']
+        # Reset the results list for this plugin
+        self.results = []
+
+        requirements = self.collect_requirements(api_data)
+        instances_by_region = requirements['instances']
+        for region, instances in instances_by_region.items():
             if not instances:
-                results.append({
+                self.results.append({
                     'resource': 'None',
                     'region': region,
                     'severity': 0,
@@ -49,11 +48,11 @@ class InstanceNameTagPlugin():
                     severity = 1
                     message = 'Instance does not have a Name tag'
 
-                results.append({
+                self.results.append({
                     'resource': instance_id,
                     'region': region,
                     'severity': severity,
                     'message': message
                 })
 
-        return results
+        return self.results
