@@ -12,12 +12,16 @@ class Plugin():
 
             service_data = provider_data.get(service, {})
             if not service_data:
-                raise RuntimeError()
+                raise RuntimeError(
+                    'Service missing from collected data: {}'.format(service)
+                )
 
             for region, calls  in service_data.items():
                 call_data = calls.get(call)
                 if call_data is None:
-                    raise RuntimeError()
+                    raise RuntimeError(
+                        'API call missing from collected data: {}'.format(call)
+                    )
                 collected_data[requirement][region] = call_data
 
         return collected_data

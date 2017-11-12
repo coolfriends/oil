@@ -40,7 +40,7 @@ class PluginTestCase(unittest.TestCase):
         with self.assertRaises(RuntimeError) as cm:
             collected_data = plugin.collect(api_data_fixture)
 
-    def test_collect_throws_error_with_bad_service_for_requirement(self):
+    def test_collect_throws_error_with_bad_call_for_requirement(self):
         plugin = Plugin()
 
         plugin.requirements = {
