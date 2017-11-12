@@ -13,6 +13,9 @@ class TLSProtocolPlugin(Plugin):
 
 
     def run(self, api_data):
+        # Reset the results list for this plugin
+        self.results = []
+
         requirements = self.collect_requirements(api_data)
         distributions = requirements['distributions']['aws-global']
 

@@ -18,6 +18,9 @@ class InstanceNameTagPlugin(Plugin):
               (incase the user has a system set up where they use InstanceName,
                or even InStaNcE NAMe)
         """
+        # Reset the results list for this plugin
+        self.results = []
+
         requirements = self.collect_requirements(api_data)
         instances_by_region = requirements['instances']
         for region, instances in instances_by_region.items():
