@@ -2,6 +2,7 @@ import unittest
 
 from oil.plugins.aws.cloudfront import TLSProtocolPlugin
 
+
 class TLSProtocolPluginTestCase(unittest.TestCase):
 
     def test_can_be_initialized_and_run_with_no_config(self):
