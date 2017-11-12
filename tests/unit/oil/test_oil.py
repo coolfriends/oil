@@ -105,6 +105,39 @@ class OilTestCase(unittest.TestCase):
 
         self.assertIsInstance(barrel, CloudFrontBarrel)
 
+    def test_unique_api_calls(self):
+        oil = Oil()
+        plugin_mock_1 = MagicMock()
+        plugin_mock_1.requirements = {
+            'distributions': ['aws', 'cloudfront', 'list_distributions'],
+            'instances': ['aws', 'ec2', 'describe_instances'],
+        }
+
+        plugin_mock_2 = MagicMock()
+        plugin_mock_2.requirements = {
+            'distributions': ['aws', 'cloudfront', 'list_distributions'],
+            'other_distributions': ['aws', 'cloudfront', 'other_distributions'],
+            'instances': ['aws', 'ec2', 'describe_instances'],
+        }
+
+        oil.plugins = [
+            plugin_mock_1,
+            plugin_mock_2,
+        ]
+
+        calls = oil._unique_api_calls()
+        self.assertEqual(
+            calls['aws']['cloudfront'],
+            set(['list_distributions', 'other_distributions'])
+        )
+        self.assertEqual(
+            calls['aws']['ec2'],
+            set(['describe_instances'])
+        )
+
+
+
+
     def test_get_barrel_raises_runtime_error_on_fail(self):
         config = {
             'aws': {
