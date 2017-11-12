@@ -20,6 +20,8 @@ class EC2Barrel():
         'eu-west-2',
         'sa-east-1'
     ])
+    provider = 'aws'
+    service = 'ec2'
 
     def __init__(self, clients=None):
         self.clients = clients or self._default_clients()

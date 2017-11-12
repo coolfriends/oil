@@ -87,6 +87,35 @@ class OilTestCase(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             oil = Oil(config)
 
+    def test_loading_barrels_can_find_good_barrel(self):
+        plugin_mock = MagicMock()
+        plugin_mock.provider = 'good_provider'
+        plugin_mock.service = 'good_service'
+        barrel_mock = MagicMock()
+        barrel_mock.provider = 'good_provider'
+        barrel_mock.service = 'good_service'
+        barrel_wrapper_mock = MagicMock()
+        barrel_wrapper_mock.provider = 'good_provider'
+        barrel_wrapper_mock.service = 'good_service'
+        barrel_wrapper_mock.return_value = barrel_mock
+        oil = Oil()
+        oil.plugins = [plugin_mock]
+        oil.available_barrels = [barrel_wrapper_mock]
+
+        oil._load_barrels()
+        self.assertEqual(oil.barrels[0].service, barrel_mock.service)
+
+    def test_loading_barrels_throws_error_if_barrel_not_found(self):
+        plugin_mock = MagicMock()
+        plugin_mock.provider = 'good_provider'
+        plugin_mock.service = 'good_service'
+        oil = Oil()
+        oil.plugins = [plugin_mock]
+        oil.available_barrels = []
+
+        with self.assertRaises(RuntimeError):
+            oil._load_barrels()
+
     def test_get_barrel_maps_cloudfront_to_correct_barrel(self):
         config = {
             'aws': {
