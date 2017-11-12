@@ -12,3 +12,8 @@ def test(ctx, no_functional=False):
         os.environ['OIL_FUNCTIONAL_TESTS'] = str(True)
 
     ctx.run('python -m unittest')
+
+@task
+def coverage(ctx):
+    ctx.run('coverage run --source=oil -m unittest discover -s tests')
+    ctx.run('coverage report')
