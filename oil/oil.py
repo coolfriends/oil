@@ -49,12 +49,10 @@ class Oil():
         }
     }
 
-    available_barrels = {
-        'aws': {
-            'cloudfront': CloudFrontBarrel,
-            'ec2': EC2Barrel,
-        }
-    }
+    available_barrels = [
+        CloudFrontBarrel,
+        EC2Barrel,
+    ]
 
     def __init__(self, config={}):
         """
@@ -65,6 +63,7 @@ class Oil():
         self.scan_data = {}
         self.plugins = []
         self._load_plugins()
+        self._load_barrels()
 
     def scan(self):
         self._collect_all_api_data()
@@ -77,6 +76,7 @@ class Oil():
     def configure(self, config):
         self.config = config
         self._load_plugins()
+        self._load_barrels()
 
     @property
     def providers(self):
@@ -135,6 +135,32 @@ class Oil():
 
                     self.plugins.append(configured_plugin)
 
+    def _load_barrels(self):
+        self.barrels = []
+        unique_service = set()
+        for plugin in self.plugins:
+            unique_service.add(
+                (
+                    plugin.provider,
+                    plugin.service,
+                )
+            )
+
+        for (provider, service) in unique_service:
+            found = False
+            for barrel in self.available_barrels:
+                if provider == barrel.provider and service == barrel.service:
+                    self.barrels.append(barrel())
+                    found = True
+            if not found:
+                message = (
+                    'Barrel not found for: Provider {}, Service {}'.format(
+                        provider,
+                        service,
+                    )
+                )
+                raise RuntimeError(message)
+
     def _collect_all_api_data(self):
         unique_api_calls = self._unique_api_calls()
         for provider, services in unique_api_calls.items():
@@ -143,16 +169,15 @@ class Oil():
                     self._collect_api_data(provider, service, api_call)
 
     def get_barrel(self, provider, service):
-        for provider_name, services in self.available_barrels.items():
-            for service_name, barrel in services.items():
-                if provider == provider_name:
-                    if service == service_name:
-                        return barrel()
+        for barrel in self.barrels:
+            if provider == barrel.provider:
+                if service == barrel.service:
+                    return barrel
 
         message = 'Barrel does not exist for Provider: {} Service: {}'.format(
             provider,
             service,
-            )
+        )
 
         raise RuntimeError(message)
 

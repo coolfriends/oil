@@ -4,6 +4,8 @@ class CloudFrontBarrel():
     _default_regions = set([
         'aws-global'
     ])
+    provider = 'aws'
+    service = 'cloudfront'
 
     def __init__(self, clients=None):
         self.clients = clients or self._default_clients()
