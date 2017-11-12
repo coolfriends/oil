@@ -5,6 +5,7 @@ from oil.plugins.aws.ec2 import InstanceNameTagPlugin
 from oil.plugins.aws.ec2 import PublicIpPlugin
 from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
+from oil.barrels.aws import IAMBarrel
 
 class Oil():
     default_config = {
@@ -52,6 +53,7 @@ class Oil():
     available_barrels = [
         CloudFrontBarrel,
         EC2Barrel,
+        IAMBarrel,
     ]
 
     def __init__(self, config={}):
