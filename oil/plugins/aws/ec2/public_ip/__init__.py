@@ -1,22 +1,15 @@
-class PublicIpPlugin():
+from oil.plugins import Plugin
+
+
+class PublicIpPlugin(Plugin):
 
     name = 'public_ip'
     service = 'ec2'
     provider = 'aws'
 
-    required_api_calls = {
-        'aws': {
-            'ec2': [
-                'describe_instances'
-            ]
-        }
+    requirements = {
+        'instances': ['aws', 'ec2', 'describe_instances']
     }
-
-    def __init__(self, config={}):
-        """
-        TODO: Add configurable variables
-        """
-        self.config = config
 
     def run(self, api_data):
         """
@@ -25,11 +18,11 @@ class PublicIpPlugin():
               (incase the user has a system set up where they use InstanceName,
                or even InStaNcE NAMe)
         """
-        results = []
-        for region, api_calls in api_data['aws']['ec2'].items():
-            instances = api_calls['describe_instances']
+        requirements = self.collect_requirements(api_data)
+        instances_by_region = requirements['instances']
+        for region, instances in instances_by_region.items():
             if not instances:
-                results.append({
+                self.results.append({
                     'resource': 'None',
                     'region': region,
                     'severity': 0,
@@ -43,7 +36,7 @@ class PublicIpPlugin():
                 if public_ip:
                     found = True
                     message = 'Instance has public ip: {}'.format(public_ip)
-                    results.append({
+                    self.results.append({
                         'resource': instance_id,
                         'severity': 1,
                         'region': region,
@@ -64,7 +57,7 @@ class PublicIpPlugin():
                                     association_public_ip
                                 )
                             )
-                            results.append({
+                            self.results.append({
                                 'resource': instance_id,
                                 'severity': 1,
                                 'region': region,
@@ -73,11 +66,11 @@ class PublicIpPlugin():
                             })
 
                 if not found:
-                    results.append({
+                    self.results.append({
                         'resource': instance_id,
                         'severity': 0,
                         'region': region,
                         'message': 'Instance has no public ips'
                     })
 
-        return results
+        return self.results

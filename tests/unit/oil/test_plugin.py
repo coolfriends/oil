@@ -19,7 +19,7 @@ class PluginTestCase(unittest.TestCase):
         }
 
         with self.assertRaises(RuntimeError):
-            collected_data = plugin.collect(api_data_fixture)
+            collected_data = plugin.collect_requirements(api_data_fixture)
 
     def test_collect_throws_error_with_bad_service_for_requirement(self):
         plugin = Plugin()
@@ -38,7 +38,7 @@ class PluginTestCase(unittest.TestCase):
         }
 
         with self.assertRaises(RuntimeError) as cm:
-            collected_data = plugin.collect(api_data_fixture)
+            collected_data = plugin.collect_requirements(api_data_fixture)
 
     def test_collect_throws_error_with_bad_call_for_requirement(self):
         plugin = Plugin()
@@ -57,7 +57,7 @@ class PluginTestCase(unittest.TestCase):
         }
 
         with self.assertRaises(RuntimeError) as cm:
-            collected_data = plugin.collect(api_data_fixture)
+            collected_data = plugin.collect_requirements(api_data_fixture)
 
     def test_can_collect_and_name_requirements_from_api_data_empty_call(self):
         plugin = Plugin()
@@ -74,7 +74,7 @@ class PluginTestCase(unittest.TestCase):
             }
         }
 
-        collected_data = plugin.collect(api_data_fixture)
+        collected_data = plugin.collect_requirements(api_data_fixture)
         expected = {
             'any-requirement-name': {
                 'any-region': []
@@ -101,7 +101,7 @@ class PluginTestCase(unittest.TestCase):
             }
         }
 
-        collected_data = plugin.collect(api_data_fixture)
+        collected_data = plugin.collect_requirements(api_data_fixture)
         expected = {
             'any-requirement-name': {
                 'any-region': [

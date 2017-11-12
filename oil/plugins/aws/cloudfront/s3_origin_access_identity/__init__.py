@@ -1,29 +1,20 @@
-class S3OriginAccessIdentityPlugin():
+from oil.plugins import Plugin
+
+class S3OriginAccessIdentityPlugin(Plugin):
     name = 's3_origin_access_identity'
     provider = 'aws'
     service = 'cloudfront'
 
-    required_api_calls = {
-        'aws': {
-            'cloudfront': [
-                'list_distributions'
-            ]
-        }
+    requirements = {
+        'distributions': ['aws', 'cloudfront', 'list_distributions']
     }
 
-    def __init__(self, config={}):
-        """
-        TODO: Set up sensible default config
-        TODO: Set up configurable variables
-        """
-        self.config = config
-
     def run(self, api_data):
-        results = []
-        distributions = api_data['aws']['cloudfront']['aws-global']['list_distributions']
+        requirements = self.collect_requirements(api_data)
+        distributions = requirements['distributions']['aws-global']
 
         if not distributions:
-            results.append({
+            self.results.append({
                 'resource': 'None',
                 'region': 'aws-global',
                 'severity': 0,
@@ -36,7 +27,7 @@ class S3OriginAccessIdentityPlugin():
             origin_items = origins.get('Items', [])
 
             if not origin_items:
-                results.append({
+                self.results.append({
                     'resource': resource_arn,
                     'region': 'aws-global',
                     'severity': 0,
@@ -46,7 +37,7 @@ class S3OriginAccessIdentityPlugin():
             for origin in origin_items:
                 origin_config = origin.get('S3OriginConfig')
                 if origin_config is None:
-                    results.append({
+                    self.results.append({
                         'resource': resource_arn,
                         'region': 'aws-global',
                         'severity': 0,
@@ -69,11 +60,11 @@ class S3OriginAccessIdentityPlugin():
                             'Distribution is using S3 origin without an origin '
                             'access identity'
                         )
-                    results.append({
+                    self.results.append({
                         'resource': resource_arn,
                         'region': 'aws-global',
                         'severity': severity,
                         'message': message
                     })
 
-        return results
+        return self.results

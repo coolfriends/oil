@@ -1,6 +1,14 @@
 class Plugin():
 
-    def collect(self, api_data):
+    def __init__(self, config={}):
+        """
+        TODO: Set up sensible default config
+        TODO: Set up configurable variables
+        """
+        self.config = config
+        self.results = []
+
+    def collect_requirements(self, api_data):
         collected_data = {}
         for requirement, [provider, service, call]  in self.requirements.items():
             collected_data[requirement] = {}
