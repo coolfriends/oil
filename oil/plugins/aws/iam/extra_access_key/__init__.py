@@ -29,11 +29,11 @@ class ExtraAccessKeyPlugin(Plugin):
         for user in users:
             username = user['user']
             resource_arn = user['arn']
-            active_1 = user['access_key_1_active']
-            active_2 = user['access_key_2_active']
+            active_1 = user.get('access_key_1_active', 'false')
+            active_2 = user.get('access_key_2_active', 'false')
 
             if active_1 == 'true' and active_2 == 'true':
-                severity = 3
+                severity = 2
                 message = 'Multiple active keys found for user {}'.format(
                     username,
                     )
@@ -47,7 +47,6 @@ class ExtraAccessKeyPlugin(Plugin):
                 message = 'Key 2 active for user {}'.format(
                     username,
                 )
-
             else:
                 severity = 0
                 message = 'No active keys for user {}'.format(
