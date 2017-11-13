@@ -4,6 +4,7 @@ from oil.plugins.aws.cloudfront import S3OriginAccessIdentityPlugin
 from oil.plugins.aws.ec2 import InstanceNameTagPlugin
 from oil.plugins.aws.ec2 import PublicIpPlugin
 from oil.plugins.aws.iam import ExtraAccessKeyPlugin
+from oil.plugins.aws.iam import AccessKeyUsagePlugin
 from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
 from oil.barrels.aws import IAMBarrel
@@ -39,6 +40,9 @@ class Oil():
                     {
                         'name': 'extra_access_key',
                     },
+                    {
+                        'name': 'access_key_usage',
+                    },
                 ]
             },
         }
@@ -57,6 +61,7 @@ class Oil():
             },
             'iam': {
                 'extra_access_key': ExtraAccessKeyPlugin,
+                'access_key_usage': AccessKeyUsagePlugin,
             },
         },
     }
