@@ -32,17 +32,17 @@ class ExtraAccessKeyPlugin(Plugin):
             active_1 = user['access_key_1_active']
             active_2 = user['access_key_2_active']
 
-            if active_1 and active_2:
+            if active_1 == 'true' and active_2 == 'true':
                 severity = 3
                 message = 'Multiple active keys found for user {}'.format(
                     username,
                     )
-            elif active_1:
+            elif active_1 == 'true':
                 severity = 0
                 message = 'Key 1 active for user {}'.format(
                     username,
                 )
-            elif active_2:
+            elif active_2 == 'true':
                 severity = 0
                 message = 'Key 2 active for user {}'.format(
                     username,
