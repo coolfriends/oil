@@ -3,6 +3,7 @@ from oil.plugins.aws.cloudfront import HTTPSPlugin
 from oil.plugins.aws.cloudfront import S3OriginAccessIdentityPlugin
 from oil.plugins.aws.ec2 import InstanceNameTagPlugin
 from oil.plugins.aws.ec2 import PublicIpPlugin
+from oil.plugins.aws.iam import ExtraAccessKeyPlugin
 from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
 from oil.barrels.aws import IAMBarrel
@@ -32,7 +33,14 @@ class Oil():
                         'name': 'public_ip',
                     }
                 ]
-            }
+            },
+            'iam': {
+                'plugins': [
+                    {
+                        'name': 'extra_access_key',
+                    },
+                ]
+            },
         }
     }
 
@@ -46,8 +54,11 @@ class Oil():
             'ec2': {
                 'instance_name_tag': InstanceNameTagPlugin,
                 'public_ip': PublicIpPlugin
-            }
-        }
+            },
+            'iam': {
+                'extra_access_key': ExtraAccessKeyPlugin,
+            },
+        },
     }
 
     available_barrels = [
