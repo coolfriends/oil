@@ -1,12 +1,27 @@
 class Plugin():
 
+    name = None
+    provider = None
+    service = None
+
+    default_config = {}
+
     def __init__(self, config={}):
         """
         TODO: Set up sensible default config
         TODO: Set up configurable variables
         """
-        self.config = config
+        self.config = self.configure(config)
         self.results = []
+
+    def configure(self, config):
+        """ Generic method to merge default_config and config for a Plugin
+        """
+        merged_config = {}
+        for k, v in self.default_config.items():
+            # Use provided config, or revert to default
+            merged_config[k] = config.get(k, v['default'])
+        return merged_config
 
     def collect_requirements(self, api_data):
         collected_data = {}

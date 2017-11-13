@@ -86,6 +86,31 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
 
         self.assertCountEqual(results_keys, expected)
 
+    def test_skips_root_keys(self):
+        user_fixture = {
+            'arn': 'arn1',
+            'user': '<root_account>',
+            'access_key_1_active': 'true',
+            'access_key_2_active': 'true',
+        }
+
+        users = [user_fixture]
+        data_fixture = {
+            'aws': {
+                'iam': {
+                    'aws-global': {
+                        'get_credential_report': users
+                    }
+                }
+            }
+        }
+
+        plugin = ExtraAccessKeyPlugin()
+        results = plugin.run(data_fixture)
+        expected = []
+
+        self.assertEqual(results, expected)
+
     def test_two_active_keys(self):
         user_fixture = {
             'arn': 'arn1',

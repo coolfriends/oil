@@ -27,6 +27,10 @@ class ExtraAccessKeyPlugin(Plugin):
             })
 
         for user in users:
+            # Root user has separate plugin
+            if user['user'] == '<root_account>':
+                continue
+
             username = user['user']
             resource_arn = user['arn']
             active_1 = user.get('access_key_1_active', 'false')
