@@ -1,9 +1,7 @@
 from oil.plugins.aws.cloudfront import *
 from oil.plugins.aws.ec2 import *
 from oil.plugins.aws.iam import *
-from oil.barrels.aws import CloudFrontBarrel
-from oil.barrels.aws import EC2Barrel
-from oil.barrels.aws import IAMBarrel
+from oil.barrels.aws import *
 
 class Oil():
     default_config = {
@@ -74,6 +72,7 @@ class Oil():
         CloudFrontBarrel,
         EC2Barrel,
         IAMBarrel,
+        RDSBarrel,
     ]
 
     def __init__(self, config={}):
