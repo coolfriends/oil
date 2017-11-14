@@ -89,10 +89,11 @@ class UserMFAPluginTestCase(unittest.TestCase):
 
         self.assertCountEqual(results_keys, expected)
 
-    def test_skips_root_account(self):
+    def test_root_account_mfa_is_active(self):
         user_fixture = {
             'arn': 'arn1',
             'user': '<root_account>',
+            'mfa_active': 'true'
         }
 
         users = [user_fixture]
@@ -108,7 +109,45 @@ class UserMFAPluginTestCase(unittest.TestCase):
 
         plugin = UserMFAPlugin()
         results = plugin.run(data_fixture)
-        expected = []
+        expected = [
+            {
+                'resource': 'arn1',
+                'region': 'aws-global',
+                'severity': 0,
+                'message': 'MFA enabled for <root_account>'
+            }
+        ]
+
+        self.assertEqual(results, expected)
+
+    def test_root_account_mfa_is_not_active(self):
+        user_fixture = {
+            'arn': 'arn1',
+            'user': '<root_account>',
+            'mfa_active': 'false'
+        }
+
+        users = [user_fixture]
+        data_fixture = {
+            'aws': {
+                'iam': {
+                    'aws-global': {
+                        'get_credential_report': users
+                    }
+                }
+            }
+        }
+
+        plugin = UserMFAPlugin()
+        results = plugin.run(data_fixture)
+        expected = [
+            {
+                'resource': 'arn1',
+                'region': 'aws-global',
+                'severity': 2,
+                'message': 'MFA not enabled for <root_account>'
+            }
+        ]
 
         self.assertEqual(results, expected)
 
@@ -175,10 +214,44 @@ class UserMFAPluginTestCase(unittest.TestCase):
 
         self.assertEqual(results, expected)
 
-    def test_mfa_is_not_active(self):
+    def test_configure_root_user_enabled_message(self):
         user_fixture = {
             'arn': 'arn1',
-            'user': 'user1',
+            'user': '<root_account>',
+            'mfa_active': 'true',
+        }
+
+        users = [user_fixture]
+        data_fixture = {
+            'aws': {
+                'iam': {
+                    'aws-global': {
+                        'get_credential_report': users
+                    }
+                }
+            }
+        }
+
+        config = {
+            'root_user_enabled_message': 'Enabled: root account'
+        }
+        plugin = UserMFAPlugin(config)
+        results = plugin.run(data_fixture)
+        expected = [
+            {
+                'resource': 'arn1',
+                'region': 'aws-global',
+                'severity': 0,
+                'message': 'Enabled: root account'
+            }
+        ]
+
+        self.assertEqual(results, expected)
+
+    def test_configure_root_user_not_enabled_message(self):
+        user_fixture = {
+            'arn': 'arn1',
+            'user': '<root_account>',
             'mfa_active': 'false',
         }
 
@@ -193,14 +266,51 @@ class UserMFAPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserMFAPlugin()
+        config = {
+            'root_user_not_enabled_message': 'Not Enabled: root account'
+        }
+        plugin = UserMFAPlugin(config)
         results = plugin.run(data_fixture)
         expected = [
             {
                 'resource': 'arn1',
                 'region': 'aws-global',
                 'severity': 2,
-                'message': 'MFA not enabled for user1'
+                'message': 'Not Enabled: root account'
+            }
+        ]
+
+        self.assertEqual(results, expected)
+
+    def test_configure_root_user_not_enabled_severity_level(self):
+        user_fixture = {
+            'arn': 'arn1',
+            'user': '<root_account>',
+            'mfa_active': 'false',
+        }
+
+        users = [user_fixture]
+        data_fixture = {
+            'aws': {
+                'iam': {
+                    'aws-global': {
+                        'get_credential_report': users
+                    }
+                }
+            }
+        }
+
+        config = {
+            'root_user_not_enabled_severity_level': 1
+        }
+        plugin = UserMFAPlugin(config)
+        results = plugin.run(data_fixture)
+        expected = [
+            {
+                'resource': 'arn1',
+                'region': 'aws-global',
+                'severity': 1,
+                'message': 'MFA not enabled for <root_account>'
             }
         ]
 
