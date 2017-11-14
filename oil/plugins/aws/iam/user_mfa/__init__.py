@@ -12,6 +12,24 @@ class UserMFAPlugin(Plugin):
     }
 
     default_config = {
+        'root_user_enabled_message': {
+            'name': 'Root User MFA Enabled Message',
+            'description': 'Change the message for Root User MFA Enabled',
+            'value_description': '{username}',
+            'default': 'MFA enabled for {username}',
+        },
+        'root_user_not_enabled_message': {
+            'name': 'Root User MFA Not Enabled Message',
+            'description': 'Change the message for Root User MFA Not Enabled',
+            'value_description': '{username}',
+            'default': 'MFA not enabled for {username}',
+        },
+        'root_user_not_enabled_severity_level': {
+            'name': 'Root User MFA Not Enabled Severity',
+            'description': 'Severity for no MFA device enabled for root user',
+            'value_description': '0 1 2',
+            'default': 2
+        },
         'enabled_message': {
             'name': 'MFA Enabled Message',
             'description': 'Change the message for MFA Enabled',
@@ -49,15 +67,21 @@ class UserMFAPlugin(Plugin):
             })
 
         for user in users:
-            # Root user has separate plugin
-            if user['user'] == '<root_account>':
-                continue
-
             username = user['user']
             resource_arn = user['arn']
             mfa_active = user.get('mfa_active', 'false')
 
-            if mfa_active == 'true':
+            if username == '<root_account>' and mfa_active == 'true':
+                severity = 0
+                message = self.config['root_user_enabled_message'].format(
+                    username=username,
+                )
+            elif username == '<root_account>':
+                severity = self.config['root_user_not_enabled_severity_level']
+                message = self.config['root_user_not_enabled_message'].format(
+                    username=username,
+                )
+            elif mfa_active == 'true':
                 severity = 0
                 message = self.config['enabled_message'].format(
                     username=username,

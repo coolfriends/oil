@@ -109,6 +109,9 @@ class IAMScanningTestCase(unittest.TestCase):
                         {
                             'name': 'user_mfa',
                             'config': {
+                                'root_user_enabled_message': 'Enabled: {username}',
+                                'root_user_not_enabled_message': 'Not Enabled: {username}',
+                                'root_user_not_enabled_severity_level': 1,
                                 'enabled_message': 'Enabled: {username}',
                                 'not_enabled_message': 'Not Enabled: {username}',
                                 'not_enabled_severity_level': 1,
