@@ -87,6 +87,20 @@ config = {
                 {
                     'name': 'total_users',
                     'config': {
+                        'total_users_severity_2_threshold': 50,
+                        'total_users_severity_1_threshold': 20,
+                        'total_users_severity_2_message': (
+                            'Total users: {total_users}'
+                        ),
+                        'total_users_severity_1_message': (
+                            'Total users: {total_users}'
+                        ),
+                        'total_users_severity_0_message': (
+                            'Total users: {total_users}'
+                        ),
+                        'no_users_message': (
+                            'No users in this AWS account'
+                        ),
                     }
                 }
             ]
