@@ -78,3 +78,52 @@ class IAMScanningTestCase(unittest.TestCase):
         plugin_results = iam_results.get('access_key_usage', [])
 
         self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_active_mfa_device_for_user(self):
+        config = {
+            'aws': {
+                'iam': {
+                    'plugins': [
+                        {
+                            'name': 'user_mfa'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        iam_results = aws_results.get('iam', {})
+        plugin_results = iam_results.get('user_mfa', [])
+
+        self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_active_mfa_device_with_config(self):
+        config = {
+            'aws': {
+                'iam': {
+                    'plugins': [
+                        {
+                            'name': 'user_mfa',
+                            'config': {
+                                'enabled_message': 'Enabled: {username}',
+                                'not_enabled_message': 'Not Enabled: {username}',
+                                'not_enabled_severity_level': 1,
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        iam_results = aws_results.get('iam', {})
+        plugin_results = iam_results.get('user_mfa', [])
+
+        self.assertNotEqual(plugin_results, [])

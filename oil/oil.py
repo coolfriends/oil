@@ -5,6 +5,7 @@ from oil.plugins.aws.ec2 import InstanceNameTagPlugin
 from oil.plugins.aws.ec2 import PublicIpPlugin
 from oil.plugins.aws.iam import ExtraAccessKeyPlugin
 from oil.plugins.aws.iam import AccessKeyUsagePlugin
+from oil.plugins.aws.iam import UserMFAPlugin
 from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
 from oil.barrels.aws import IAMBarrel
@@ -43,6 +44,9 @@ class Oil():
                     {
                         'name': 'access_key_usage',
                     },
+                    {
+                        'name': 'user_mfa',
+                    },
                 ]
             },
         }
@@ -57,11 +61,12 @@ class Oil():
             },
             'ec2': {
                 'instance_name_tag': InstanceNameTagPlugin,
-                'public_ip': PublicIpPlugin
+                'public_ip': PublicIpPlugin,
             },
             'iam': {
                 'extra_access_key': ExtraAccessKeyPlugin,
                 'access_key_usage': AccessKeyUsagePlugin,
+                'user_mfa': UserMFAPlugin,
             },
         },
     }
