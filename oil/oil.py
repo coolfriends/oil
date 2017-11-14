@@ -43,6 +43,9 @@ class Oil():
                     {
                         'name': 'user_password_rotation',
                     },
+                    {
+                        'name': 'total_users',
+                    },
                 ]
             },
         }
@@ -64,6 +67,7 @@ class Oil():
                 'access_key_usage': AccessKeyUsagePlugin,
                 'user_mfa': UserMFAPlugin,
                 'user_password_rotation': UserPasswordRotationPlugin,
+                'total_users': TotalUsersPlugin,
             },
         },
     }
