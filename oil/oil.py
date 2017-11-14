@@ -1,11 +1,6 @@
-from oil.plugins.aws.cloudfront import TLSProtocolPlugin
-from oil.plugins.aws.cloudfront import HTTPSPlugin
-from oil.plugins.aws.cloudfront import S3OriginAccessIdentityPlugin
-from oil.plugins.aws.ec2 import InstanceNameTagPlugin
-from oil.plugins.aws.ec2 import PublicIpPlugin
-from oil.plugins.aws.iam import ExtraAccessKeyPlugin
-from oil.plugins.aws.iam import AccessKeyUsagePlugin
-from oil.plugins.aws.iam import UserMFAPlugin
+from oil.plugins.aws.cloudfront import *
+from oil.plugins.aws.ec2 import *
+from oil.plugins.aws.iam import *
 from oil.barrels.aws import CloudFrontBarrel
 from oil.barrels.aws import EC2Barrel
 from oil.barrels.aws import IAMBarrel
@@ -47,6 +42,9 @@ class Oil():
                     {
                         'name': 'user_mfa',
                     },
+                    {
+                        'name': 'user_password_rotation',
+                    },
                 ]
             },
         }
@@ -67,6 +65,7 @@ class Oil():
                 'extra_access_key': ExtraAccessKeyPlugin,
                 'access_key_usage': AccessKeyUsagePlugin,
                 'user_mfa': UserMFAPlugin,
+                'user_password_rotation': UserPasswordRotationPlugin,
             },
         },
     }

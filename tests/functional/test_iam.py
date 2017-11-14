@@ -130,3 +130,64 @@ class IAMScanningTestCase(unittest.TestCase):
         plugin_results = iam_results.get('user_mfa', [])
 
         self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_password_rotation_date_for_user(self):
+        config = {
+            'aws': {
+                'iam': {
+                    'plugins': [
+                        {
+                            'name': 'user_password_rotation'
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        iam_results = aws_results.get('iam', {})
+        plugin_results = iam_results.get('user_password_rotation', [])
+
+        self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_active_mfa_device_with_config(self):
+        config = {
+            'aws': {
+                'iam': {
+                    'plugins': [
+                        {
+                            'name': 'user_password_rotation',
+                            'config': {
+                                'password_rotation_severity_2_threshold': 180,
+                                'password_rotation_severity_1_threshold': 90,
+                                'password_rotation_severity_2_message': (
+                                    '{days} days since last rotation for {username} '
+                                ),
+                                'password_rotation_severity_1_message': (
+                                    '{days} days since last rotation for {username}'
+                                ),
+                                'password_rotation_severity_0_message': (
+                                    '{username} is not violating password rotation '
+                                    'best practices'
+                                ),
+                                'password_rotation_severity_0_message': (
+                                    'No password for this user'
+                                ),
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        iam_results = aws_results.get('iam', {})
+        plugin_results = iam_results.get('user_password_rotation', [])
+
+        self.assertNotEqual(plugin_results, [])
