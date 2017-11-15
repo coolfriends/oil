@@ -21,33 +21,28 @@ This project is based on some specific design goals:
 
 Development Usage
 -----------------
-Run the default scan and print to console
-```bash
-python scripts/run.py
-```
+Run the default scan and print to console::
 
-Specify csv output
-```bash
-python scripts/run.py --output csv
-```
+  python scripts/run.py
+
+Specify csv output::
+
+  python scripts/run.py --output csv
 
 Contributing
 ------------
-Create your branch with a descriptive name, create a virtual env, and download dependencies:
-```bash
-pip install -r requirements.txt
-pip install -r requirements.dev.txt
-```
+Create your branch with a descriptive name, create a virtual env, and download dependencies::
 
-Run the tests
-```bash
-invoke test
-```
+  pip install -r requirements.txt
+  pip install -r requirements.dev.txt
 
-Run without functional tests
-```bash
-invoke test --no-functional
-```
+Run the tests::
+
+  invoke test
+
+Run without functional tests::
+
+  invoke test --no-functional
 
 Note: Running tests sets the OIL_FUNCTIONAL_TESTS env variable in your shell.
 
