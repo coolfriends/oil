@@ -153,7 +153,7 @@ class IAMScanningTestCase(unittest.TestCase):
 
         self.assertNotEqual(plugin_results, [])
 
-    def test_oil_can_scan_for_active_mfa_device_with_config(self):
+    def test_oil_can_scan_for_password_rotation_with_config(self):
         config = {
             'aws': {
                 'iam': {
@@ -189,5 +189,65 @@ class IAMScanningTestCase(unittest.TestCase):
         aws_results = results.get('aws', {})
         iam_results = aws_results.get('iam', {})
         plugin_results = iam_results.get('user_password_rotation', [])
+
+        self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_total_users(self):
+        config = {
+            'aws': {
+                'iam': {
+                    'plugins': [
+                        {
+                            'name': 'total_users',
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        iam_results = aws_results.get('iam', {})
+        plugin_results = iam_results.get('total_users', [])
+
+        self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_total_users_with_config(self):
+        config = {
+            'aws': {
+                'iam': {
+                    'plugins': [
+                        {
+                            'name': 'total_users',
+                            'config': {
+                                'total_users_severity_2_threshold': 50,
+                                'total_users_severity_1_threshold': 20,
+                                'total_users_severity_2_message': (
+                                    'Total users: {total_users}'
+                                ),
+                                'total_users_severity_1_message': (
+                                    'Total users: {total_users}'
+                                ),
+                                'total_users_severity_0_message': (
+                                    'Total users: {total_users}'
+                                ),
+                                'no_users_message': (
+                                    'No users in this AWS account'
+                                ),
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        oil = Oil(config)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        iam_results = aws_results.get('iam', {})
+        plugin_results = iam_results.get('total_users', [])
 
         self.assertNotEqual(plugin_results, [])
