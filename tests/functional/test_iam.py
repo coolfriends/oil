@@ -1,4 +1,3 @@
-# Make sure that Oil implements all necessary EC2 security plugins
 import unittest
 import os
 
@@ -6,7 +5,7 @@ from oil import Oil
 
 
 @unittest.skipIf(os.environ.get('OIL_FUNCTIONAL_TESTS', 'False') != 'True', "Skipping functional tests")
-class IAMScanningTestCase(unittest.TestCase):
+class IAMTestCase(unittest.TestCase):
     def test_oil_can_scan_for_extra_access_key(self):
         config = {
             'aws': {
