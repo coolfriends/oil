@@ -3,6 +3,7 @@ from oil.plugins.aws.ec2 import *
 from oil.plugins.aws.iam import *
 from oil.barrels.aws import *
 
+
 class Oil():
     default_config = {
         'aws': {
