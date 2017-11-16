@@ -31,7 +31,7 @@ class PublicDBInstancesPlugin(Plugin):
             'default': 0,
         },
         'public_db_instance_message': {
-            'name': 'Public DB Instance Severity',
+            'name': 'Public DB Instance Message',
             'description': 'Adjust message for public DB instances',
             'value_description': '{db_id}',
             'default': 'The DB instance {db_id} is publicly accessible',
@@ -67,7 +67,6 @@ class PublicDBInstancesPlugin(Plugin):
 
             for db_instance in db_instances:
                 db_instance_identifier = db_instance['DBInstanceIdentifier']
-                db_instance_arn = db_instance['DBInstanceArn']
 
                 publicly_accessible = db_instance['PubliclyAccessible']
                 if publicly_accessible:
