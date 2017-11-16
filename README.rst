@@ -19,6 +19,12 @@ This project is based on some specific design goals:
 - Results are returned in a simple to navigate Python dictionary
 - Support for Azure and Google Cloud
 
+Build
+-----
+Download the repo and install with::
+
+  pip install -e .
+
 Development Usage
 -----------------
 Run the default scan and print to console::
