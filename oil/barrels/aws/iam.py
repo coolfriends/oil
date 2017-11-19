@@ -1,31 +1,15 @@
-import boto3
+from oil.barrels.barrel import Barrel
 
 
-class IAMBarrel():
+class IAMBarrel(Barrel):
     _default_regions = set([
         'aws-global'
     ])
     provider = 'aws'
     service = 'iam'
-
-    def __init__(self, oil, config={}, clients=None):
-        self.oil = oil
-        self.clients = clients or self._default_clients()
-
-    def _default_clients(self):
-        clients = {}
-        for region in self._default_regions:
-            clients[region] = boto3.client('iam', region_name=region)
-        return clients
-
-    def tap(self, call):
-        if call == 'get_credential_report':
-            return self.get_credential_report()
-        else:
-            raise RuntimeError('The api call {} is not implemented'.format(
-                call
-                )
-            )
+    tap_calls = set([
+        'get_credential_report',
+    ])
 
     def get_credential_report(self):
         users_by_region = {}

@@ -1,7 +1,7 @@
-import boto3
+from oil.barrels.barrel import Barrel
 
 
-class RDSBarrel():
+class RDSBarrel(Barrel):
     _default_regions = set([
         'us-east-2',
         'us-east-1',
@@ -22,23 +22,9 @@ class RDSBarrel():
     ])
     provider = 'aws'
     service = 'rds'
-
-    def __init__(self, oil, config={}, clients={}):
-        self.oil = oil
-        self.config = config
-        self.clients = clients or self._default_clients()
-
-    def _default_clients(self):
-        clients = {}
-        for region in self._default_regions:
-            clients[region] = boto3.client('rds', region_name=region)
-        return clients
-
-    def tap(self, call):
-        if call == 'describe_db_instances':
-            return self.describe_db_instances()
-        else:
-            raise RuntimeError('The api call {} is not implemented'.format(call))
+    tap_calls = set([
+        'describe_db_instances',
+    ])
 
     def describe_db_instances(self):
         db_instances_by_region = {}
