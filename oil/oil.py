@@ -80,16 +80,33 @@ class Oil():
         RDSBarrel,
     ]
 
-    def __init__(self, config={}):
+    _valid_kwargs = set([
+        'aws_access_key_id',
+        'aws_secret_access_key',
+        'session_token'
+    ])
+
+    def __init__(self, config={}, **kwargs):
         """
         TODO: Create sensible default configuration
         """
-        self.config = config or self.default_config;
+        self._validate_kwargs(**kwargs)
+        self.config = config or self.default_config
         self.cached_api_data = {}
         self.scan_data = {}
         self.plugins = []
         self._load_plugins()
         self._load_barrels()
+        self.aws_access_key_id = kwargs.get('aws_access_key_id')
+        self.aws_secret_access_key = kwargs.get('aws_secret_access_key')
+        self.session_token = kwargs.get('session_token')
+
+    def _validate_kwargs(self, **kwargs):
+        for k, v in kwargs.items():
+            if k not in self._valid_kwargs:
+                raise RuntimeError(
+                    'Received invalid kwarg: {}'.format(k)
+                )
 
     def scan(self):
         self._collect_all_api_data()
