@@ -6,11 +6,15 @@ class Plugin():
 
     default_config = {}
 
-    def __init__(self, config={}):
+    def __init__(self, oil, config={}):
+        """ Base initalization
+
+        :param oil: a reference to an :class:`Oil` instance
+
+        :param config: the configuration for the plugin
+
         """
-        TODO: Set up sensible default config
-        TODO: Set up configurable variables
-        """
+        self.oil = oil
         self.config = self.configure(config)
         self.results = []
 
@@ -39,7 +43,7 @@ class Plugin():
                     'Service missing from collected data: {}'.format(service)
                 )
 
-            for region, calls  in service_data.items():
+            for region, calls in service_data.items():
                 call_data = calls.get(call)
                 if call_data is None:
                     raise RuntimeError(

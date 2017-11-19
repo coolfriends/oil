@@ -19,7 +19,7 @@ class PublicIpPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicIpPlugin()
+        plugin = PublicIpPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -77,7 +77,7 @@ class PublicIpPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicIpPlugin()
+        plugin = PublicIpPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -100,7 +100,7 @@ class PublicIpPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicIpPlugin()
+        plugin = PublicIpPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'None',
@@ -128,7 +128,7 @@ class PublicIpPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicIpPlugin()
+        plugin = PublicIpPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'theid',
@@ -166,7 +166,7 @@ class PublicIpPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicIpPlugin()
+        plugin = PublicIpPlugin({})
         results = plugin.run(api_data_fixture)
         message_format = 'Instance has public ip: {}'
         expected = [
@@ -209,7 +209,7 @@ class PublicIpPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicIpPlugin()
+        plugin = PublicIpPlugin({})
         results = plugin.run(api_data_fixture)
         message_format = 'Instance has public ip: {}'
         expected = [

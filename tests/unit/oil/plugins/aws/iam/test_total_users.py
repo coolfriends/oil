@@ -18,7 +18,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TotalUsersPlugin()
+        plugin = TotalUsersPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -75,7 +75,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TotalUsersPlugin()
+        plugin = TotalUsersPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -100,7 +100,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TotalUsersPlugin()
+        plugin = TotalUsersPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -131,7 +131,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TotalUsersPlugin()
+        plugin = TotalUsersPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -161,7 +161,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TotalUsersPlugin()
+        plugin = TotalUsersPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -191,7 +191,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TotalUsersPlugin()
+        plugin = TotalUsersPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -232,7 +232,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
         config = {
             'total_users_severity_2_threshold': 2
         }
-        plugin = TotalUsersPlugin(config)
+        plugin = TotalUsersPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -273,7 +273,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
         config = {
             'total_users_severity_1_threshold': 2
         }
-        plugin = TotalUsersPlugin(config)
+        plugin = TotalUsersPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -315,7 +315,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             'total_users_severity_2_threshold': 2,
             'total_users_severity_2_message': '{total_users} is too many users'
         }
-        plugin = TotalUsersPlugin(config)
+        plugin = TotalUsersPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -357,7 +357,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
             'total_users_severity_1_threshold': 2,
             'total_users_severity_1_message': '{total_users} is too many users'
         }
-        plugin = TotalUsersPlugin(config)
+        plugin = TotalUsersPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -400,7 +400,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
                 '{total_users} is an acceptable amount of users'
             )
         }
-        plugin = TotalUsersPlugin(config)
+        plugin = TotalUsersPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -429,7 +429,7 @@ class TotalUsersPluginTestCase(unittest.TestCase):
                 'No users found'
             )
         }
-        plugin = TotalUsersPlugin(config)
+        plugin = TotalUsersPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {

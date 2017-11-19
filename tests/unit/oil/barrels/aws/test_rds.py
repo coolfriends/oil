@@ -33,13 +33,13 @@ class RDSBarrelTestCase(unittest.TestCase):
             'sa-east-1',
             'us-gov-west-1'
         ])
-        barrel = RDSBarrel([])
+        barrel = RDSBarrel({})
         self.assertEqual(default_regions, barrel._default_regions)
 
     @patch("boto3.client")
     def test_default_clients(self, mock_client):
         mock_client.return_value = MagicMock()
-        barrel = RDSBarrel()
+        barrel = RDSBarrel({})
 
         for region, client in barrel.clients.items():
             self.assertIn(region, barrel._default_regions)
@@ -54,17 +54,17 @@ class RDSBarrelTestCase(unittest.TestCase):
                 ]
             )
         }
-        barrel = RDSBarrel(clients)
+        barrel = RDSBarrel({}, clients=clients)
         tap_return = barrel.tap('describe_db_instances')
         describe_db_instances_return = barrel.describe_db_instances()
 
         self.assertEqual(describe_db_instances_return, tap_return)
 
     def test_tap_throws_error_with_unsupported_call(self):
-        barrel = RDSBarrel(clients=[])
+        barrel = RDSBarrel({}, clients=[])
 
         with self.assertRaises(RuntimeError):
-            tap_return = barrel.tap('unsupported_call')
+            barrel.tap('unsupported_call')
 
     def test_describe_db_instances_returns_only_db_instances(self):
         clients = {
@@ -87,7 +87,7 @@ class RDSBarrelTestCase(unittest.TestCase):
                 ]
             )
         }
-        barrel = RDSBarrel(clients)
+        barrel = RDSBarrel({}, clients=clients)
 
         results = barrel.describe_db_instances()
         results_from_region = results['us-east-1']
@@ -113,7 +113,7 @@ class RDSBarrelTestCase(unittest.TestCase):
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
-        barrel = RDSBarrel(clients)
+        barrel = RDSBarrel({}, clients=clients)
 
         results = barrel.describe_db_instances()
 
@@ -131,7 +131,7 @@ class RDSBarrelTestCase(unittest.TestCase):
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
-        barrel = RDSBarrel(clients)
+        barrel = RDSBarrel({}, clients=clients)
 
         results = barrel.describe_db_instances()
 

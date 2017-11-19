@@ -41,13 +41,13 @@ class IAMBarrelTestCase(unittest.TestCase):
         default_regions = set([
             'aws-global'
         ])
-        barrel = IAMBarrel([])
+        barrel = IAMBarrel({})
         self.assertEqual(default_regions, barrel._default_regions)
 
     @patch("boto3.client")
     def test_default_clients(self, mock_client):
         mock_client.return_value = MagicMock()
-        barrel = IAMBarrel()
+        barrel = IAMBarrel({})
 
         for region, client in barrel.clients.items():
             self.assertIn(region, barrel._default_regions)
@@ -63,20 +63,14 @@ class IAMBarrelTestCase(unittest.TestCase):
         clients = {
             'aws-global': client
         }
-        barrel = IAMBarrel(clients)
+        barrel = IAMBarrel({}, clients=clients)
         tap_return = barrel.tap('get_credential_report')
         get_credential_report_return = barrel.get_credential_report()
 
         self.assertEqual(get_credential_report_return, tap_return)
 
     def test_tap_throws_error_with_unsupported_call(self):
-        barrel = IAMBarrel([])
+        barrel = IAMBarrel({})
 
         with self.assertRaises(RuntimeError):
             tap_return = barrel.tap('unsupported_call')
-
-    @unittest.skip('Refactor waiting for this so it can be tested')
-    def test_generate_credential_waits_for_report(self):
-        client = MagicMock()
-        barrel = IAMBarrel([])
-

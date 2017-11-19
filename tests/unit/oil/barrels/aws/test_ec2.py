@@ -32,13 +32,13 @@ class EC2BarrelTestCase(unittest.TestCase):
             'eu-west-2',
             'sa-east-1'
         ])
-        barrel = EC2Barrel([])
+        barrel = EC2Barrel({})
         self.assertEqual(default_regions, barrel._default_regions)
 
     @patch("boto3.client")
     def test_default_clients(self, mock_client):
         mock_client.return_value = MagicMock()
-        barrel = EC2Barrel()
+        barrel = EC2Barrel({})
 
         for region, client in barrel.clients.items():
             self.assertIn(region, barrel._default_regions)
@@ -49,7 +49,7 @@ class EC2BarrelTestCase(unittest.TestCase):
                 boto3_describe_instances_paginator_one_field
             )
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
         tap_return = barrel.tap('describe_instances')
         describe_instances_return = barrel.describe_instances()
 
@@ -61,14 +61,14 @@ class EC2BarrelTestCase(unittest.TestCase):
                 boto3_describe_instances_paginator_one_field
             )
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
         tap_return = barrel.tap('describe_security_groups')
         describe_security_groups_return = barrel.describe_security_groups()
 
         self.assertEqual(describe_security_groups_return, tap_return)
 
     def test_tap_throws_error_with_unsupported_call(self):
-        barrel = EC2Barrel([])
+        barrel = EC2Barrel({})
 
         with self.assertRaises(RuntimeError):
             tap_return = barrel.tap('unsupported_call')
@@ -79,7 +79,7 @@ class EC2BarrelTestCase(unittest.TestCase):
                 boto3_describe_instances_paginator_one_field
             )
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
 
         results = barrel.describe_instances()
         results_from_region = results['us-east-1']
@@ -126,7 +126,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
 
         results = barrel.describe_instances()
 
@@ -148,7 +148,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
 
         results = barrel.describe_instances()
 
@@ -184,7 +184,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
 
         results = barrel.describe_security_groups()
         expected = {
@@ -216,7 +216,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
 
         results = barrel.describe_security_groups()
 
@@ -235,7 +235,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
-        barrel = EC2Barrel(clients)
+        barrel = EC2Barrel({}, clients=clients)
 
         results = barrel.describe_security_groups()
 

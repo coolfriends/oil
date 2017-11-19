@@ -19,7 +19,7 @@ class S3OriginAccessIdentityPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = S3OriginAccessIdentityPlugin()
+        plugin = S3OriginAccessIdentityPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -77,7 +77,7 @@ class S3OriginAccessIdentityPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = S3OriginAccessIdentityPlugin()
+        plugin = S3OriginAccessIdentityPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -100,7 +100,7 @@ class S3OriginAccessIdentityPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = S3OriginAccessIdentityPlugin()
+        plugin = S3OriginAccessIdentityPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'None',
@@ -129,7 +129,7 @@ class S3OriginAccessIdentityPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = S3OriginAccessIdentityPlugin()
+        plugin = S3OriginAccessIdentityPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -161,7 +161,7 @@ class S3OriginAccessIdentityPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = S3OriginAccessIdentityPlugin()
+        plugin = S3OriginAccessIdentityPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -195,7 +195,7 @@ class S3OriginAccessIdentityPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = S3OriginAccessIdentityPlugin()
+        plugin = S3OriginAccessIdentityPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -233,7 +233,7 @@ class S3OriginAccessIdentityPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = S3OriginAccessIdentityPlugin()
+        plugin = S3OriginAccessIdentityPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',

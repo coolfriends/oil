@@ -84,7 +84,7 @@ class InstanceNameTagPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = InstanceNameTagPlugin()
+        plugin = InstanceNameTagPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -107,7 +107,7 @@ class InstanceNameTagPluginTestCase(unittest.TestCase):
                 }
             }
         }
-        plugin = InstanceNameTagPlugin()
+        plugin = InstanceNameTagPlugin({})
         results = plugin.run(data_fixture)
         expected = [{
             'resource': 'None',
@@ -138,7 +138,7 @@ class InstanceNameTagPluginTestCase(unittest.TestCase):
                 }
             }
         }
-        plugin = InstanceNameTagPlugin()
+        plugin = InstanceNameTagPlugin({})
         results = plugin.run(data_fixture)
         expected = [{
             'resource': 'id1',
@@ -169,7 +169,7 @@ class InstanceNameTagPluginTestCase(unittest.TestCase):
                 }
             }
         }
-        plugin = InstanceNameTagPlugin()
+        plugin = InstanceNameTagPlugin({})
         results = plugin.run(data_fixture)
         expected = [{
             'resource': 'id1',

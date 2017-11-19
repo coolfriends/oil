@@ -23,7 +23,9 @@ class EC2Barrel():
     provider = 'aws'
     service = 'ec2'
 
-    def __init__(self, clients=None):
+    def __init__(self, oil, config={}, clients=None):
+        self.oil = oil
+        self.config = config
         self.clients = clients or self._default_clients()
 
     def _default_clients(self):

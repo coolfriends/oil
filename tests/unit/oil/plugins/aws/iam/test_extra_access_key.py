@@ -17,7 +17,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = ExtraAccessKeyPlugin()
+        plugin = ExtraAccessKeyPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -74,7 +74,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = ExtraAccessKeyPlugin()
+        plugin = ExtraAccessKeyPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -105,7 +105,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = ExtraAccessKeyPlugin()
+        plugin = ExtraAccessKeyPlugin({})
         results = plugin.run(data_fixture)
         expected = []
 
@@ -130,7 +130,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = ExtraAccessKeyPlugin()
+        plugin = ExtraAccessKeyPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -162,7 +162,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = ExtraAccessKeyPlugin()
+        plugin = ExtraAccessKeyPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -194,7 +194,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = ExtraAccessKeyPlugin()
+        plugin = ExtraAccessKeyPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -226,7 +226,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = ExtraAccessKeyPlugin()
+        plugin = ExtraAccessKeyPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {

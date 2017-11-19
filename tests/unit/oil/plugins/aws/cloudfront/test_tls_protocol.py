@@ -17,7 +17,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -71,7 +71,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -94,7 +94,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'None',
@@ -120,7 +120,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -149,7 +149,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -178,7 +178,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -207,7 +207,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -236,7 +236,7 @@ class TLSProtocolPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = TLSProtocolPlugin()
+        plugin = TLSProtocolPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',

@@ -3,24 +3,17 @@ import unittest
 import os
 
 from oil import Oil
+from oil.barrels.aws import EC2Barrel
+from oil.plugins.aws.ec2 import InstanceNameTagPlugin
+from oil.plugins.aws.ec2 import PublicIpPlugin
 
 
 @unittest.skipIf(os.environ.get('OIL_FUNCTIONAL_TESTS', 'False') != 'True', "Skipping functional tests")
 class EC2ScanningTestCase(unittest.TestCase):
     def test_oil_can_scan_for_name_tag_compliance(self):
-        config = {
-            'aws': {
-                'ec2': {
-                    'plugins': [
-                        {
-                            'name': 'instance_name_tag'
-                        }
-                    ]
-                }
-            }
-        }
-
-        oil = Oil(config)
+        oil = Oil()
+        oil.register_barrel(EC2Barrel)
+        oil.register_plugin(InstanceNameTagPlugin)
         results = oil.scan()
 
         aws_results = results.get('aws', {})
@@ -30,19 +23,9 @@ class EC2ScanningTestCase(unittest.TestCase):
         self.assertNotEqual(plugin_results, [])
 
     def test_oil_can_scan_for_public_ip_on_instances(self):
-        config = {
-            'aws': {
-                'ec2': {
-                    'plugins': [
-                        {
-                            'name': 'public_ip'
-                        }
-                    ]
-                }
-            }
-        }
-
-        oil = Oil(config)
+        oil = Oil()
+        oil.register_barrel(EC2Barrel)
+        oil.register_plugin(PublicIpPlugin)
         results = oil.scan()
 
         aws_results = results.get('aws', {})
