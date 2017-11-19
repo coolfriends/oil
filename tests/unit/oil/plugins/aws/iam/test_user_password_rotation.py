@@ -18,7 +18,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserPasswordRotationPlugin()
+        plugin = UserPasswordRotationPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -77,7 +77,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserPasswordRotationPlugin()
+        plugin = UserPasswordRotationPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -106,7 +106,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserPasswordRotationPlugin()
+        plugin = UserPasswordRotationPlugin({})
         results = plugin.run(data_fixture)
         expected = []
 
@@ -130,7 +130,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserPasswordRotationPlugin()
+        plugin = UserPasswordRotationPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -163,7 +163,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserPasswordRotationPlugin()
+        plugin = UserPasswordRotationPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -196,7 +196,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserPasswordRotationPlugin()
+        plugin = UserPasswordRotationPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -229,7 +229,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserPasswordRotationPlugin()
+        plugin = UserPasswordRotationPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -265,7 +265,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
         config = {
             'password_rotation_severity_2_threshold': 90
         }
-        plugin = UserPasswordRotationPlugin(config)
+        plugin = UserPasswordRotationPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -301,7 +301,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
         config = {
             'password_rotation_severity_1_threshold': 90
         }
-        plugin = UserPasswordRotationPlugin(config)
+        plugin = UserPasswordRotationPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -338,7 +338,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
         config = {
             'password_rotation_severity_2_message': message
         }
-        plugin = UserPasswordRotationPlugin(config)
+        plugin = UserPasswordRotationPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -374,7 +374,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
         config = {
             'password_rotation_severity_1_message': message
         }
-        plugin = UserPasswordRotationPlugin(config)
+        plugin = UserPasswordRotationPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -446,7 +446,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
         config = {
             'password_rotation_severity_0_message': message
         }
-        plugin = UserPasswordRotationPlugin(config)
+        plugin = UserPasswordRotationPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -481,7 +481,7 @@ class UserPasswordRotationPluginTestCase(unittest.TestCase):
         config = {
             'no_password_message': message
         }
-        plugin = UserPasswordRotationPlugin(config)
+        plugin = UserPasswordRotationPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {

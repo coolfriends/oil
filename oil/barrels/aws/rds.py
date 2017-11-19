@@ -23,7 +23,9 @@ class RDSBarrel():
     provider = 'aws'
     service = 'rds'
 
-    def __init__(self, clients=None):
+    def __init__(self, oil, config={}, clients={}):
+        self.oil = oil
+        self.config = config
         self.clients = clients or self._default_clients()
 
     def _default_clients(self):
@@ -41,7 +43,7 @@ class RDSBarrel():
     def describe_db_instances(self):
         db_instances_by_region = {}
         for region, client in self.clients.items():
-            paginator = self.clients[region].get_paginator(
+            paginator = client.get_paginator(
                 'describe_db_instances'
             )
             response_iterator = paginator.paginate()

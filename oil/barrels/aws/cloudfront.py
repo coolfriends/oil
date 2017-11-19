@@ -7,7 +7,8 @@ class CloudFrontBarrel():
     provider = 'aws'
     service = 'cloudfront'
 
-    def __init__(self, clients=None):
+    def __init__(self, oil, config={}, clients=None):
+        self.oil = oil
         self.clients = clients or self._default_clients()
 
     def _default_clients(self):

@@ -3,7 +3,7 @@ import unittest
 from oil.plugins.aws.rds import PublicDBInstancesPlugin
 
 
-class ExtraAccessKeyPluginTestCase(unittest.TestCase):
+class PublicDBInstancesPluginTestCase(unittest.TestCase):
 
     def test_can_be_initialized_and_run_with_no_config(self):
         data_fixture = {
@@ -16,7 +16,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicDBInstancesPlugin()
+        plugin = PublicDBInstancesPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -39,7 +39,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicDBInstancesPlugin()
+        plugin = PublicDBInstancesPlugin({}, {})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -74,7 +74,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicDBInstancesPlugin()
+        plugin = PublicDBInstancesPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -97,7 +97,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicDBInstancesPlugin()
+        plugin = PublicDBInstancesPlugin({})
         results = plugin.run(data_fixture)
         expected = [{
             'resource': 'None',
@@ -125,7 +125,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicDBInstancesPlugin()
+        plugin = PublicDBInstancesPlugin({})
         results = plugin.run(data_fixture)
         expected = [{
             'resource': db_instance_fixture['DBInstanceIdentifier'],
@@ -185,7 +185,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = PublicDBInstancesPlugin()
+        plugin = PublicDBInstancesPlugin({})
         results = plugin.run(data_fixture)
         expected = [{
             'resource': db_instance_fixture['DBInstanceIdentifier'],
@@ -212,7 +212,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
         config = {
             'no_db_instances_severity': 1
         }
-        plugin = PublicDBInstancesPlugin(config)
+        plugin = PublicDBInstancesPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -245,7 +245,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
         config = {
             'public_db_instance_severity': 1
         }
-        plugin = PublicDBInstancesPlugin(config)
+        plugin = PublicDBInstancesPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -280,15 +280,18 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
         config = {
             'non_public_db_instance_severity': 2
         }
-        plugin = PublicDBInstancesPlugin(config)
+        plugin = PublicDBInstancesPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
                 'resource': db_instance_fixture['DBInstanceIdentifier'],
                 'region': 'aws-global',
                 'severity': 2,
-                'message': 'The DB instance {db_id} is not publicly accessible'.format(
-                        db_id=db_instance_fixture['DBInstanceIdentifier'],
+                'message': (
+                    'The DB instance {db_id} is not publicly '
+                    'accessible'
+                ).format(
+                    db_id=db_instance_fixture['DBInstanceIdentifier'],
                 )
             }
         ]
@@ -309,7 +312,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
         config = {
             'no_db_instances_message': 'Overridden message'
         }
-        plugin = PublicDBInstancesPlugin(config)
+        plugin = PublicDBInstancesPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -342,7 +345,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
         config = {
             'public_db_instance_message': 'Overridden message for public DB instance {db_id}'
         }
-        plugin = PublicDBInstancesPlugin(config)
+        plugin = PublicDBInstancesPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -377,7 +380,7 @@ class ExtraAccessKeyPluginTestCase(unittest.TestCase):
         config = {
             'non_public_db_instance_message': 'Overridden message for non-public DB instance {db_id}'
         }
-        plugin = PublicDBInstancesPlugin(config)
+        plugin = PublicDBInstancesPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {

@@ -2,9 +2,10 @@ import unittest
 
 from oil.plugins import Plugin
 
+
 class PluginTestCase(unittest.TestCase):
     def test_collect_throws_error_with_bad_provider_for_requirement(self):
-        plugin = Plugin()
+        plugin = Plugin({})
         plugin.requirements = {
             'any-requirement-name': ['bad-provider', 'any-service', 'any-call']
         }
@@ -19,10 +20,10 @@ class PluginTestCase(unittest.TestCase):
         }
 
         with self.assertRaises(RuntimeError):
-            collected_data = plugin.collect_requirements(api_data_fixture)
+            plugin.collect_requirements(api_data_fixture)
 
     def test_collect_throws_error_with_bad_service_for_requirement(self):
-        plugin = Plugin()
+        plugin = Plugin({})
 
         plugin.requirements = {
             'any-requirement-name': ['good-provider', 'bad-service', 'any-call']
@@ -37,11 +38,11 @@ class PluginTestCase(unittest.TestCase):
             }
         }
 
-        with self.assertRaises(RuntimeError) as cm:
-            collected_data = plugin.collect_requirements(api_data_fixture)
+        with self.assertRaises(RuntimeError):
+            plugin.collect_requirements(api_data_fixture)
 
     def test_collect_throws_error_with_bad_call_for_requirement(self):
-        plugin = Plugin()
+        plugin = Plugin({})
 
         plugin.requirements = {
             'any-requirement-name': ['good-provider', 'good-service', 'bad-call']
@@ -60,7 +61,7 @@ class PluginTestCase(unittest.TestCase):
             collected_data = plugin.collect_requirements(api_data_fixture)
 
     def test_can_collect_and_name_requirements_from_api_data_empty_call(self):
-        plugin = Plugin()
+        plugin = Plugin({})
         plugin.requirements = {
             'any-requirement-name': ['any-provider', 'any-service', 'any-call']
         }
@@ -82,8 +83,8 @@ class PluginTestCase(unittest.TestCase):
         }
         self.assertEqual(collected_data, expected)
 
-    def test_can_collect_and_name_requirements_from_api_data_with_call_data(self):
-        plugin = Plugin()
+    def test_can_collect_requirements_from_api_data_using_call_data(self):
+        plugin = Plugin({})
         plugin.requirements = {
             'any-requirement-name': ['any-provider', 'any-service', 'any-call']
         }

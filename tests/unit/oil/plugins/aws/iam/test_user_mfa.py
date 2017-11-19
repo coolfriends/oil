@@ -18,7 +18,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserMFAPlugin()
+        plugin = UserMFAPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -77,7 +77,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserMFAPlugin()
+        plugin = UserMFAPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -107,7 +107,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserMFAPlugin()
+        plugin = UserMFAPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -138,7 +138,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserMFAPlugin()
+        plugin = UserMFAPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -170,7 +170,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserMFAPlugin()
+        plugin = UserMFAPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -201,7 +201,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = UserMFAPlugin()
+        plugin = UserMFAPlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -235,7 +235,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
         config = {
             'root_user_enabled_message': 'Enabled: root account'
         }
-        plugin = UserMFAPlugin(config)
+        plugin = UserMFAPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -269,7 +269,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
         config = {
             'root_user_not_enabled_message': 'Not Enabled: root account'
         }
-        plugin = UserMFAPlugin(config)
+        plugin = UserMFAPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -303,7 +303,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
         config = {
             'root_user_not_enabled_severity_level': 1
         }
-        plugin = UserMFAPlugin(config)
+        plugin = UserMFAPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -337,7 +337,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
         config = {
             'enabled_message': 'Enabled: {username}'
         }
-        plugin = UserMFAPlugin(config)
+        plugin = UserMFAPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -371,7 +371,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
         config = {
             'not_enabled_message': 'Not Enabled: {username}'
         }
-        plugin = UserMFAPlugin(config)
+        plugin = UserMFAPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -405,7 +405,7 @@ class UserMFAPluginTestCase(unittest.TestCase):
         config = {
             'not_enabled_severity_level': 1
         }
-        plugin = UserMFAPlugin(config)
+        plugin = UserMFAPlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {

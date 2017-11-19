@@ -18,7 +18,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -75,7 +75,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -106,7 +106,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = []
 
@@ -131,7 +131,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -164,7 +164,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -197,7 +197,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -232,7 +232,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -267,7 +267,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -301,7 +301,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -335,7 +335,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -369,7 +369,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -403,7 +403,7 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = AccessKeyUsagePlugin()
+        plugin = AccessKeyUsagePlugin({})
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -436,10 +436,10 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin_config = {
+        config = {
             'access_key_last_used_severity_two_threshold': 60
         }
-        plugin = AccessKeyUsagePlugin(plugin_config)
+        plugin = AccessKeyUsagePlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {
@@ -472,10 +472,10 @@ class AccessKeyUsagePluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin_config = {
+        config = {
             'access_key_last_used_severity_one_threshold': 30
         }
-        plugin = AccessKeyUsagePlugin(plugin_config)
+        plugin = AccessKeyUsagePlugin({}, config)
         results = plugin.run(data_fixture)
         expected = [
             {

@@ -19,7 +19,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -79,7 +79,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(data_fixture)
         results_keys = list(results[0].keys())
         expected = [
@@ -102,7 +102,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'None',
@@ -128,7 +128,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -164,7 +164,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -193,7 +193,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -222,7 +222,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',
@@ -254,7 +254,7 @@ class HTTPSPluginTestCase(unittest.TestCase):
             }
         }
 
-        plugin = HTTPSPlugin()
+        plugin = HTTPSPlugin({})
         results = plugin.run(api_data_fixture)
         expected = [{
             'resource': 'anarn',

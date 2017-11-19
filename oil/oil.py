@@ -1,85 +1,6 @@
-from oil.plugins.aws.cloudfront import *
-from oil.plugins.aws.ec2 import *
-from oil.plugins.aws.iam import *
-from oil.barrels.aws import *
 
 
 class Oil():
-    default_config = {
-        'aws': {
-            'cloudfront': {
-                'plugins': [
-                    {
-                        'name': 'tls_protocol',
-                    },
-                    {
-                        'name': 'https'
-                    },
-                    {
-                        'name': 's3_origin_access_identity'
-                    }
-                ]
-            },
-            'ec2': {
-                'plugins': [
-                    {
-                        'name': 'instance_name_tag',
-                    },
-                    {
-                        'name': 'public_ip',
-                    }
-                ]
-            },
-            'iam': {
-                'plugins': [
-                    {
-                        'name': 'extra_access_key',
-                    },
-                    {
-                        'name': 'access_key_usage',
-                    },
-                    {
-                        'name': 'user_mfa',
-                    },
-                    {
-                        'name': 'user_password_rotation',
-                    },
-                    {
-                        'name': 'total_users',
-                    },
-                ]
-            },
-        }
-    }
-
-    supports = {
-        'aws': {
-            'cloudfront': {
-                'tls_protocol': TLSProtocolPlugin,
-                'https': HTTPSPlugin,
-                's3_origin_access_identity': S3OriginAccessIdentityPlugin,
-            },
-            'ec2': {
-                'instance_name_tag': InstanceNameTagPlugin,
-                'public_ip': PublicIpPlugin,
-            },
-            'iam': {
-                'extra_access_key': ExtraAccessKeyPlugin,
-                'access_key_usage': AccessKeyUsagePlugin,
-                'user_mfa': UserMFAPlugin,
-                'user_password_rotation': UserPasswordRotationPlugin,
-                'total_users': TotalUsersPlugin,
-            },
-        },
-    }
-
-    available_barrels = [
-        CloudFrontBarrel,
-        EC2Barrel,
-        IAMBarrel,
-        RDSBarrel,
-    ]
-
     _valid_kwargs = set([
         'aws_access_key_id',
         'aws_secret_access_key',
@@ -91,15 +12,81 @@ class Oil():
         TODO: Create sensible default configuration
         """
         self._validate_kwargs(**kwargs)
-        self.config = config or self.default_config
+        self.config = config
         self.cached_api_data = {}
         self.scan_data = {}
-        self.plugins = []
-        self._load_plugins()
-        self._load_barrels()
+        self.plugins = {}
+        self.barrels = {}
+        self.unique_api_calls = {}
         self.aws_access_key_id = kwargs.get('aws_access_key_id')
         self.aws_secret_access_key = kwargs.get('aws_secret_access_key')
         self.session_token = kwargs.get('session_token')
+
+    def register_barrel(self, barrel_cls, config={}):
+        """ Register a barrel by provider and service name. It returns a
+        reference to the instance of the barrel that is created in the
+        registration process. A reference to the current :class:`Oil` instance
+        is passed into the barrel instance.
+
+        :param barrel_cls: the class name of a barrel
+
+        :param config:     configuration for the barrel. see the documentation
+                           on the barrel for information about configuration
+                           options
+
+        :returns a reference to the barrel instance created during registration
+
+        """
+        provider = barrel_cls.provider
+        service = barrel_cls.service
+        if self.get_barrel(provider, service):
+            raise RuntimeError('Barrel {} - {} already exists.'.format(
+                provider,
+                service,
+            ))
+
+        # Make sure provider dict exists
+        if not self.barrels.get(provider):
+            self.barrels[provider] = {}
+
+        self.barrels[provider][service] = barrel_cls(self, config=config)
+        return self.barrels[provider][service]
+
+    def register_plugin(self, plugin_cls, config={}):
+        """ Register a plugin by provider, service, and plugin name. It returns
+        a reference to the instance of the plugin that is created in the
+        registration process. A reference to the current :class:`Oil` instance
+        is passed into the plugin instance.
+
+        :param plugin_cls: the class name of a plugin
+
+        :param config:     configuration for the plugin. see the documentation
+                           on the plugin for information about configuration
+                           options
+
+        :returns a reference to the plugin instance created during registration
+
+        """
+        provider = plugin_cls.provider
+        service = plugin_cls.service
+        plugin_name = plugin_cls.name
+        if self.get_plugin(provider, service, plugin_name):
+            raise RuntimeError('Plugin {} - {} - {} already exists.'.format(
+                provider,
+                service,
+                plugin_name,
+            ))
+
+        # Make sure provider dict exists
+        if not self.plugins.get(provider):
+            self.plugins[provider] = {}
+
+        # Make sure service dict exists
+        if not self.plugins[provider].get(service):
+            self.plugins[provider][service] = {}
+
+        self.plugins[provider][service][plugin_name] = plugin_cls(self, config)
+        return self.plugins[provider][service][plugin_name]
 
     def _validate_kwargs(self, **kwargs):
         for k, v in kwargs.items():
@@ -111,98 +98,7 @@ class Oil():
     def scan(self):
         self._collect_all_api_data()
         self._run_plugins()
-
-        # Return a copy of this so the user does not get
-        # direct access to saved scan results
-        return self.scan_data.copy()
-
-    def configure(self, config):
-        self.config = config
-        self._load_plugins()
-        self._load_barrels()
-
-    @property
-    def providers(self):
-        return list(self.config.keys())
-
-    def services(self, provider):
-        services_dict = self.config.get(provider, {})
-        services = [k for k in services_dict.keys()]
-        if not services:
-            message = 'Not configured for provider: {}'.format(provider)
-            raise RuntimeError(message)
-
-        return services
-
-    def _supported_providers(self):
-        return list(self.supports.keys())
-
-    def _supported_services(self, provider):
-        services = self.supports.get(provider, {})
-
-        return list(services.keys())
-
-    def _fetch_plugin(self, **kwargs):
-        provider = kwargs['provider']
-        service = kwargs['service']
-        plugin_name = kwargs['plugin_name']
-        return self.supports[provider][service][plugin_name]
-
-    def _load_plugins(self):
-        """
-        TODO: Make adding plugins more dynamic than a large if statement
-        TODO: Log if no plugins are passed in
-        """
-        self.plugins = []
-        for provider, services in self.config.items():
-            if provider not in self._supported_providers():
-                raise RuntimeError('Unsupported provider: {}'.format(provider))
-
-            for service, service_config in services.items():
-                if service not in self._supported_services(provider):
-                    message = 'Unsupported service: {}'.format(service)
-                    raise RuntimeError()
-
-                for plugin in service_config.get('plugins', []):
-                    plugin_name = plugin.get('name', '')
-                    try:
-                        class_name = self._fetch_plugin(
-                            provider=provider,
-                            service=service,
-                            plugin_name=plugin_name,
-                        )
-                    except KeyError as e:
-                        message = 'Unsupported plugin: {}'.format(plugin_name)
-                        raise RuntimeError(message) from e
-                    configured_plugin = class_name(plugin.get('config', {}))
-
-                    self.plugins.append(configured_plugin)
-
-    def _load_barrels(self):
-        self.barrels = []
-        unique_service = set()
-        for plugin in self.plugins:
-            unique_service.add(
-                (
-                    plugin.provider,
-                    plugin.service,
-                )
-            )
-
-        for (provider, service) in unique_service:
-            found = False
-            for barrel in self.available_barrels:
-                if provider == barrel.provider and service == barrel.service:
-                    self.barrels.append(barrel())
-                    found = True
-            if not found:
-                message = (
-                    'Barrel not found for: Provider {}, Service {}'.format(
-                        provider,
-                        service,
-                    )
-                )
-                raise RuntimeError(message)
+        return self.scan_data
 
     def _collect_all_api_data(self):
         unique_api_calls = self._unique_api_calls()
@@ -212,17 +108,14 @@ class Oil():
                     self._collect_api_data(provider, service, api_call)
 
     def get_barrel(self, provider, service):
-        for barrel in self.barrels:
-            if provider == barrel.provider:
-                if service == barrel.service:
-                    return barrel
+        """ Returns a reference to a barrel, or None
+        """
+        return self.barrels.get(provider, {}).get(service)
 
-        message = 'Barrel does not exist for Provider: {} Service: {}'.format(
-            provider,
-            service,
-        )
-
-        raise RuntimeError(message)
+    def get_plugin(self, provider, service, name):
+        """ Returns a reference to a plugin, or None
+        """
+        return self.plugins.get(provider, {}).get(service, {}).get(name)
 
     def _collect_api_data(self, provider, service, call):
         if not self.cached_api_data.get(provider):
@@ -242,23 +135,30 @@ class Oil():
                 service_data[region] = {}
             service_data[region][call] = call_data
 
+    def _add_to_unique_api_calls(self, api_calls, plugin):
+        for _, [provider, service, call] in plugin.requirements.items():
+            if not api_calls.get(provider):
+                api_calls[provider] = {}
+
+            if not api_calls[provider].get(service):
+                api_calls[provider][service] = set()
+
+            api_calls[provider][service].add(call)
+
     def _unique_api_calls(self):
         unique_api_calls = {}
-        for plugin in self.plugins:
-            for requirement, [provider, service, call] in plugin.requirements.items():
-                if provider not in unique_api_calls.keys():
-                    unique_api_calls[provider] = {}
-
-                if service not in unique_api_calls[provider].keys():
-                    unique_api_calls[provider][service] = set()
-
-                unique_api_calls[provider][service].add(call)
+        for provider, services in self.plugins.items():
+            for service, plugin_instances in services.items():
+                for plugin_name, plugin in plugin_instances.items():
+                    self._add_to_unique_api_calls(unique_api_calls, plugin)
         return unique_api_calls
 
     def _run_plugins(self):
-        for plugin in self.plugins:
-            results = plugin.run(self.cached_api_data)
-            self._store_results(plugin, results)
+        for provider, services in self.plugins.items():
+            for service, plugin_instances in services.items():
+                for plugin_name, plugin in plugin_instances.items():
+                    results = plugin.run(self.cached_api_data)
+                    self._store_results(plugin, results)
 
     def _store_results(self, plugin, results):
         provider = plugin.provider

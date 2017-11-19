@@ -19,13 +19,13 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
         default_regions = set([
             'aws-global'
         ])
-        barrel = CloudFrontBarrel([])
+        barrel = CloudFrontBarrel({}, clients={})
         self.assertEqual(default_regions, barrel._default_regions)
 
     @patch("boto3.client")
     def test_default_clients(self, mock_client):
         mock_client.return_value = MagicMock()
-        barrel = CloudFrontBarrel()
+        barrel = CloudFrontBarrel({})
 
         for region, client in barrel.clients.items():
             self.assertIn(region, barrel._default_regions)
@@ -41,23 +41,23 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
         clients = {
             'aws-global': self.client_mock(fixture)
         }
-        barrel = CloudFrontBarrel(clients)
+        barrel = CloudFrontBarrel({}, clients=clients)
         tap_return = barrel.tap('list_distributions')
         list_distributions_return = barrel.list_distributions()
 
         self.assertEqual(list_distributions_return, tap_return)
 
     def test_tap_throws_error_with_unsupported_call(self):
-        barrel = CloudFrontBarrel([])
+        barrel = CloudFrontBarrel({})
 
         with self.assertRaises(RuntimeError):
-            tap_return = barrel.tap('unsupported_call')
+            barrel.tap('unsupported_call')
 
     def test_list_distributions_returns_only_distributions(self):
         clients = {
             'aws-global': self.client_mock(response_iterator_fixture)
         }
-        barrel = CloudFrontBarrel(clients)
+        barrel = CloudFrontBarrel({}, clients=clients)
 
         results = barrel.list_distributions()
 
@@ -103,7 +103,7 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
         clients = {
             'aws-global': self.client_mock(fixture)
         }
-        barrel = CloudFrontBarrel(clients)
+        barrel = CloudFrontBarrel({}, clients=clients)
 
         results = barrel.list_distributions()
 
@@ -123,7 +123,7 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
         clients = {
             'aws-global': self.client_mock(fixture)
         }
-        barrel = CloudFrontBarrel(clients)
+        barrel = CloudFrontBarrel({}, clients=clients)
 
         results = barrel.list_distributions()
 

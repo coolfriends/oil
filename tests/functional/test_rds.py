@@ -2,24 +2,16 @@ import unittest
 import os
 
 from oil import Oil
+from oil.plugins.aws.rds import PublicDBInstancesPlugin
+from oil.barrels.aws import RDSBarrel
 
 
 @unittest.skipIf(os.environ.get('OIL_FUNCTIONAL_TESTS', 'False') != 'True', "Skipping functional tests")
 class RDSTestCase(unittest.TestCase):
     def test_oil_can_scan_for_rds_public_db_instances(self):
-        config = {
-            'aws': {
-                'rds': {
-                    'plugins': [
-                        {
-                            'name': 'public_db_instances'
-                        }
-                    ]
-                }
-            }
-        }
-
-        oil = Oil(config)
+        oil = Oil()
+        oil.register_barrel(RDSBarrel)
+        oil.register_plugin(PublicDBInstancesPlugin)
         results = oil.scan()
 
         aws_results = results.get('aws', {})

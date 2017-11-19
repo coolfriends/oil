@@ -1,0 +1,17 @@
+aws:
+  cloudfront:
+    plugins:
+      - name: tls_protocol
+      - name: https
+      - name: s3_origin_access_identity
+  ec2:
+    plugins:
+      - name: instance_name_tag
+      - name: public_ip
+  iam:
+    plugins:
+      - name: extra_access_key
+      - name: access_key_usage
+      - name: user_mfa
+      - name: user_password_rotation
+      - name: total_users
