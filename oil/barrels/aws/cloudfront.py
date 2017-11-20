@@ -11,6 +11,9 @@ class CloudFrontBarrel(Barrel):
         'list_distributions',
     ])
 
+    def __init__(self, oil, **kwargs):
+        super().__init__(oil, **kwargs)
+
     def list_distributions(self):
         distributions_by_region = {}
         for region, client in self.clients.items():

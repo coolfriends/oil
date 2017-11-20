@@ -18,9 +18,6 @@ class Oil():
         self.plugins = {}
         self.barrels = {}
         self.unique_api_calls = {}
-        self.aws_access_key_id = kwargs.get('aws_access_key_id')
-        self.aws_secret_access_key = kwargs.get('aws_secret_access_key')
-        self.session_token = kwargs.get('session_token')
 
     def register_barrel(self, barrel_cls, config={}):
         """ Register a barrel by provider and service name. It returns a
@@ -49,7 +46,7 @@ class Oil():
         if not self.barrels.get(provider):
             self.barrels[provider] = {}
 
-        self.barrels[provider][service] = barrel_cls(self, config=config)
+        self.barrels[provider][service] = barrel_cls(self, **config)
         return self.barrels[provider][service]
 
     def register_plugin(self, plugin_cls, config={}):

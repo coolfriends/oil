@@ -12,6 +12,10 @@ except ImportError: # If module not installed with pip
     sys.path.insert(0, oil_path)
     from oil import Oil
 
+from oil.barrels.aws import CloudFrontBarrel
+from oil.plugins.aws.cloudfront import TLSProtocolPlugin
+
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Run a basic oil scan."
@@ -59,6 +63,16 @@ def main():
     args = parse_args()
 
     oil = Oil()
+    """ Use sts credentials
+    oil.register_barrel(CloudFrontBarrel, config={
+            'aws_access_key_id': 'my_access_key',
+            'aws_secret_access_key': 'my_secret_access_key',
+            'aws_session_token': 'my-session-token'
+        }
+    )
+    """
+    oil.register_barrel(CloudFrontBarrel)
+    oil.register_plugin(TLSProtocolPlugin)
     data = oil.scan()
     if args.output == 'csv':
         print_as_csv(data)

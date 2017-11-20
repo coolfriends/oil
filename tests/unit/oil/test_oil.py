@@ -7,25 +7,6 @@ from oil.barrels.aws import CloudFrontBarrel
 
 class OilTestCase(unittest.TestCase):
 
-    def test_can_take_sts_credentials(self):
-        oil = Oil(
-            aws_access_key_id='my_id',
-            aws_secret_access_key='my_key',
-            session_token='my_token',
-        )
-        self.assertEqual(oil.aws_access_key_id, 'my_id')
-        self.assertEqual(oil.aws_secret_access_key, 'my_key')
-        self.assertEqual(oil.session_token, 'my_token')
-
-    def test_validates_good_kwargs(self):
-        valid_args = {
-            'aws_access_key_id': 'my_id',
-            'aws_secret_access_key': 'my_key',
-            'session_token': 'session_token',
-        }
-        oil = Oil()
-        oil._validate_kwargs(**valid_args)
-
     def test_oil_throws_error_with_bad_kwargs(self):
         with self.assertRaises(RuntimeError):
             Oil(bad_arg='my_bad_arg')

@@ -7,11 +7,15 @@ class Barrel():
     service = None
     tap_calls = set()
 
-    def __init__(self, oil, config={}, clients=None):
+    def __init__(self, oil, **kwargs):
         self.oil = oil
-        self.config = config
-        self.session = boto3.session.Session()
-        self.clients = clients or self._default_clients()
+        self.config = kwargs.get('config', {})
+        self.session = boto3.session.Session(
+            aws_access_key_id=kwargs.get('aws_access_key_id'),
+            aws_secret_access_key=kwargs.get('aws_secret_access_key'),
+            aws_session_token=kwargs.get('session_token'),
+        )
+        self.clients = kwargs.get('clients', self._default_clients())
 
     def _default_clients(self):
         clients = {}

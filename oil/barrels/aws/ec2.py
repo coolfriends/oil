@@ -29,6 +29,9 @@ class EC2Barrel(Barrel):
         'describe_security_groups',
     ])
 
+    def __init__(self, oil, **kwargs):
+        super().__init__(oil, **kwargs)
+
     def describe_instances(self):
         instances_by_region = {}
         for region, client in self.clients.items():
