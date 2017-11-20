@@ -24,6 +24,9 @@ class RDSBarrel(Barrel):
         'describe_db_instances',
     ])
 
+    def __init__(self, oil, **kwargs):
+        super().__init__(oil, **kwargs)
+
     def describe_db_instances(self):
         db_instances_by_region = {}
         for region, client in self.clients.items():
