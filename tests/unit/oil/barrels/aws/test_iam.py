@@ -73,4 +73,4 @@ class IAMBarrelTestCase(unittest.TestCase):
         barrel = IAMBarrel({})
 
         with self.assertRaises(RuntimeError):
-            tap_return = barrel.tap('unsupported_call')
+            barrel.tap('unsupported_call')

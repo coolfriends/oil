@@ -1,8 +1,10 @@
-import boto3
+from oil.barrels.barrel import Barrel
 
-class EC2Barrel():
+
+class EC2Barrel(Barrel):
     """
-    TODO: Extend barrel to work for multiple regions by leveraging multiple clients
+    TODO: Extend barrel to work for multiple regions by leveraging
+    multiple clients
     """
     _default_regions = set([
         'us-east-2',
@@ -22,25 +24,10 @@ class EC2Barrel():
     ])
     provider = 'aws'
     service = 'ec2'
-
-    def __init__(self, oil, config={}, clients=None):
-        self.oil = oil
-        self.config = config
-        self.clients = clients or self._default_clients()
-
-    def _default_clients(self):
-        clients = {}
-        for region in self._default_regions:
-            clients[region] = boto3.client('ec2', region_name=region)
-        return clients
-
-    def tap(self, call):
-        if call == 'describe_instances':
-            return self.describe_instances()
-        if call == 'describe_security_groups':
-            return self.describe_security_groups()
-        else:
-            raise RuntimeError('The api call {} is not implemented'.format(call))
+    tap_calls = set([
+        'describe_instances',
+        'describe_security_groups',
+    ])
 
     def describe_instances(self):
         instances_by_region = {}
