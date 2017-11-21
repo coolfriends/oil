@@ -22,4 +22,5 @@ setup(
         'boto3',
         'arrow',
     ],
+    scripts=['oil/bin/oil'],
 )

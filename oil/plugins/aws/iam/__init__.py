@@ -4,3 +4,10 @@ from oil.plugins.aws.iam.user_mfa import UserMFAPlugin
 from oil.plugins.aws.iam.user_password_rotation import UserPasswordRotationPlugin
 from oil.plugins.aws.iam.total_users import TotalUsersPlugin
 
+core_plugins = [
+    ExtraAccessKeyPlugin,
+    AccessKeyUsagePlugin,
+    UserMFAPlugin,
+    UserPasswordRotationPlugin,
+    TotalUsersPlugin,
+]

@@ -18,6 +18,8 @@ This project is based on some specific design goals:
 - Enables users to easily design new plugins
 - Results are returned in a simple to navigate Python dictionary
 - Support for Azure and Google Cloud
+- Released on PyPI
+
 
 Build
 -----
@@ -29,18 +31,19 @@ Development Usage
 -----------------
 Run the default scan and print to console::
 
-  python scripts/run.py
+  oil
 
 Specify csv output::
 
-  python scripts/run.py --output csv
+  oil --output csv
 
 Contributing
 ------------
-Create your branch with a descriptive name, create a virtual env, and download dependencies::
+Clone a copy and install locally::
 
-  pip install -r requirements.txt
-  pip install -r requirements.dev.txt
+  git clone https://github.com/your-fork/oil.git
+  cd oil
+  pip install -e .
 
 Run the tests::
 
@@ -51,6 +54,7 @@ Run without functional tests::
   invoke test --no-functional
 
 Note: Running tests sets the OIL_FUNCTIONAL_TESTS env variable in your shell.
+
 
 Todo
 ----
