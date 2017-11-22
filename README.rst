@@ -37,6 +37,10 @@ Specify csv output::
 
   oil --output csv
 
+Save to file::
+
+  oil -f myfile.json
+
 Contributing
 ------------
 Clone a copy and install locally::
