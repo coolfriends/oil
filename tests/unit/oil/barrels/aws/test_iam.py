@@ -37,12 +37,12 @@ class IAMBarrelTestCase(unittest.TestCase):
 
         return client
 
-    def test_has_correct_default_regions(self):
-        default_regions = set([
+    def test_has_correct_supported_regions(self):
+        supported_regions = set([
             'aws-global'
         ])
         barrel = IAMBarrel({})
-        self.assertEqual(default_regions, barrel._default_regions)
+        self.assertEqual(supported_regions, barrel.supported_regions)
 
     @patch("boto3.client")
     def test_default_clients(self, mock_client):
@@ -50,7 +50,7 @@ class IAMBarrelTestCase(unittest.TestCase):
         barrel = IAMBarrel({})
 
         for region, client in barrel.clients.items():
-            self.assertIn(region, barrel._default_regions)
+            self.assertIn(region, barrel.supported_regions)
 
     def test_tap_functions_with_get_credential_report(self):
         client = MagicMock()

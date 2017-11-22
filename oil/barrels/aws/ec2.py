@@ -6,7 +6,7 @@ class EC2Barrel(Barrel):
     TODO: Extend barrel to work for multiple regions by leveraging
     multiple clients
     """
-    _default_regions = set([
+    supported_regions = set([
         'us-east-2',
         'us-east-1',
         'us-west-1',

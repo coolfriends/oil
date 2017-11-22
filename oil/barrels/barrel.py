@@ -2,7 +2,7 @@ import boto3
 
 
 class Barrel():
-    _default_regions = set()
+    supported_regions = set()
     provider = None
     service = None
     tap_calls = set()
@@ -15,11 +15,14 @@ class Barrel():
             aws_secret_access_key=kwargs.get('aws_secret_access_key'),
             aws_session_token=kwargs.get('session_token'),
         )
-        self.clients = kwargs.get('clients', self._default_clients())
+        self.regions = kwargs.get('regions', self.supported_regions)
+        self.clients = kwargs.get('clients')
+        if self.clients is None:
+            self.clients = self._make_clients()
 
-    def _default_clients(self):
+    def _make_clients(self):
         clients = {}
-        for region in self._default_regions:
+        for region in self.regions:
             clients[region] = self.session.client(
                 self.service,
                 region_name=region,
