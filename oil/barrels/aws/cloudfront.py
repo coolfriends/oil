@@ -2,7 +2,7 @@ from oil.barrels.barrel import Barrel
 
 
 class CloudFrontBarrel(Barrel):
-    _default_regions = set([
+    supported_regions = set([
         'aws-global'
     ])
     provider = 'aws'

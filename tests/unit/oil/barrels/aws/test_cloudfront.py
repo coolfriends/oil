@@ -15,12 +15,12 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
 
         return client
 
-    def test_has_correct_default_regions(self):
-        default_regions = set([
+    def test_has_correct_supported_regions(self):
+        supported_regions = set([
             'aws-global'
         ])
         barrel = CloudFrontBarrel({}, clients={})
-        self.assertEqual(default_regions, barrel._default_regions)
+        self.assertEqual(supported_regions, barrel.supported_regions)
 
     @patch("boto3.client")
     def test_default_clients(self, mock_client):
@@ -28,7 +28,7 @@ class CloudFrontBarrelTestCase(unittest.TestCase):
         barrel = CloudFrontBarrel({})
 
         for region, client in barrel.clients.items():
-            self.assertIn(region, barrel._default_regions)
+            self.assertIn(region, barrel.supported_regions)
 
     def test_tap_functions_with_list_distributions(self):
         fixture = [

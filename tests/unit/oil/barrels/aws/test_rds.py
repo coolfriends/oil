@@ -14,8 +14,8 @@ class RDSBarrelTestCase(unittest.TestCase):
 
         return client
 
-    def test_has_correct_default_regions(self):
-        default_regions = set([
+    def test_has_correct_supported_regions(self):
+        supported_regions = set([
             'us-east-2',
             'us-east-1',
             'us-west-1',
@@ -32,15 +32,15 @@ class RDSBarrelTestCase(unittest.TestCase):
             'sa-east-1',
         ])
         barrel = RDSBarrel({})
-        self.assertEqual(default_regions, barrel._default_regions)
+        self.assertEqual(supported_regions, barrel.supported_regions)
 
     @patch("boto3.client")
-    def test_default_clients(self, mock_client):
+    def test_supported_clients(self, mock_client):
         mock_client.return_value = MagicMock()
         barrel = RDSBarrel({})
 
         for region, client in barrel.clients.items():
-            self.assertIn(region, barrel._default_regions)
+            self.assertIn(region, barrel.supported_regions)
 
     def test_tap_functions_with_describe_db_instances(self):
         clients = {
