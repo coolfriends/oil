@@ -80,3 +80,5 @@ if __name__ == '__main__':
         json.dump(scan_data, out_file, indent=2)
     else:
         print('Unsupported output format.')
+
+    out_file.close()
