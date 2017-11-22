@@ -19,6 +19,8 @@ def parse_args():
                         help='set output as json or csv',
                         choices=choices,
                         default='json')
+    parser.add_argument('--file-name', '-f',
+                        help='save to file')
     return parser.parse_args()
 
 
@@ -39,7 +41,7 @@ def flattened_scan_data(scan_data):
                     yield row
 
 
-def print_as_csv(scan_data):
+def output_csv(scan_data, out_file):
     fields = (
         'provider',
         'service',
@@ -50,7 +52,7 @@ def print_as_csv(scan_data):
         'message'
     )
 
-    writer = csv.DictWriter(sys.stdout, fieldnames=fields)
+    writer = csv.DictWriter(out_file, fieldnames=fields)
     writer.writeheader()
     for row in flattened_scan_data(scan_data):
         writer.writerow(row)
@@ -67,9 +69,14 @@ if __name__ == '__main__':
         oil.register_plugin(plugin)
 
     scan_data = oil.scan()
+
+    out_file = sys.stdout
+    if args.file_name:
+        out_file = open(args.file_name, 'w')
+
     if args.output == 'csv':
-        print_as_csv(scan_data)
+        output_csv(scan_data, out_file)
     elif args.output == 'json':
-        print(json.dumps(scan_data, indent=2))
+        json.dump(scan_data, out_file, indent=2)
     else:
         print('Unsupported output format.')
