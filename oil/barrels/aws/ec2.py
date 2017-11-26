@@ -27,10 +27,19 @@ class EC2Barrel(Barrel):
     tap_calls = set([
         'describe_instances',
         'describe_security_groups',
+        'high_threat_security_groups',
     ])
+    default_high_threat_ports = [
+        80,    # HTTP
+        443,   # HTTPS
+        3389,  # RDS
+    ]
 
     def __init__(self, oil, **kwargs):
         super().__init__(oil, **kwargs)
+        self.cache = {}
+        self.high_threat_ports = kwargs.get('high_threat_ports',
+                                            self.default_high_threat_ports)
 
     def describe_instances(self):
         instances_by_region = {}
@@ -49,6 +58,9 @@ class EC2Barrel(Barrel):
         return instances_by_region
 
     def describe_security_groups(self):
+        if self.cache.get('describe_security_groups'):
+            return self.cache['describe_security_groups']
+
         security_groups_by_region = {}
         for region, client in self.clients.items():
             paginator = client.get_paginator('describe_security_groups')
@@ -61,4 +73,23 @@ class EC2Barrel(Barrel):
 
             security_groups_by_region[region] = groups
 
+        self.cache['describe_security_groups'] = security_groups_by_region
         return security_groups_by_region
+
+    def high_threat_security_groups(self):
+        high_threat_groups_by_region = {}
+        for region, security_groups in self.describe_security_groups().items():
+            high_threat_groups = []
+            for security_group in security_groups:
+                if self.has_high_threat_port(security_group):
+                    high_threat_groups.append(security_group)
+            if high_threat_groups:
+                high_threat_groups_by_region[region] = high_threat_groups
+
+        return high_threat_groups_by_region
+
+    def has_high_threat_port(self, security_group):
+        for rule in security_group['IpPermissions']:
+            if rule.get('FromPort') in self.high_threat_ports:
+                return True
+        return False
