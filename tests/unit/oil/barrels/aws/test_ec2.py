@@ -57,9 +57,17 @@ class EC2BarrelTestCase(unittest.TestCase):
 
     def test_tap_functions_with_describe_security_groups(self):
         clients = {
-            'us-east-1': self.client_mock(
-                boto3_describe_instances_paginator_one_field
-            )
+            'us-east-1': self.client_mock([])
+        }
+        barrel = EC2Barrel({}, clients=clients)
+        tap_return = barrel.tap('describe_security_groups')
+        describe_security_groups_return = barrel.describe_security_groups()
+
+        self.assertEqual(describe_security_groups_return, tap_return)
+
+    def test_tap_functions_with_high_threat_security_groups(self):
+        clients = {
+            'us-east-1': self.client_mock([])
         }
         barrel = EC2Barrel({}, clients=clients)
         tap_return = barrel.tap('describe_security_groups')
@@ -71,7 +79,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         barrel = EC2Barrel({})
 
         with self.assertRaises(RuntimeError):
-            tap_return = barrel.tap('unsupported_call')
+            barrel.tap('unsupported_call')
 
     def test_describe_instances_returns_only_instances(self):
         clients = {
@@ -241,6 +249,121 @@ class EC2BarrelTestCase(unittest.TestCase):
 
         expected = {
             'us-east-1': []
+        }
+
+        self.assertEqual(results, expected)
+
+    def test_high_threat_security_groups_with_no_security_groups(self):
+        fixture = [
+            {
+            }
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = EC2Barrel({}, clients=clients)
+
+        results = barrel.high_threat_security_groups()
+
+        expected = {
+        }
+
+        self.assertEqual(results, expected)
+
+    def test_high_threat_security_groups_with_no_high_threat_security_groups(self):
+        fixture = [
+            {
+                'SecurityGroups': [
+                    {
+                        'IpPermissions': [
+                            {
+                            'FromPort': 10
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = EC2Barrel({}, clients=clients)
+
+        results = barrel.high_threat_security_groups()
+
+        expected = {
+        }
+
+        self.assertEqual(results, expected)
+
+    def test_high_threat_security_groups_with_high_threat_security_groups(self):
+        fixture = [
+            {
+                'SecurityGroups': [
+                    {
+                        'IpPermissions': [
+                            {
+                                'FromPort': 80
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = EC2Barrel({}, clients=clients)
+
+        results = barrel.high_threat_security_groups()
+
+        expected = {
+            'us-east-1': [
+                {
+                    'IpPermissions': [
+                        {
+                            'FromPort': 80,
+                        }
+                    ]
+                }
+            ]
+        }
+
+        self.assertEqual(results, expected)
+
+    def test_high_threat_ports_can_be_configured(self):
+        fixture = [
+            {
+                'SecurityGroups': [
+                    {
+                        'IpPermissions': [
+                            {
+                                'FromPort': 9000  # Not usually high threat
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = EC2Barrel({}, clients=clients, high_threat_ports=[
+            9000
+        ])
+
+        results = barrel.high_threat_security_groups()
+
+        expected = {
+            'us-east-1': [
+                {
+                    'IpPermissions': [
+                        {
+                            'FromPort': 9000,
+                        }
+                    ]
+                }
+            ]
         }
 
         self.assertEqual(results, expected)
