@@ -81,15 +81,21 @@ class EC2Barrel(Barrel):
         for region, security_groups in self.describe_security_groups().items():
             high_threat_groups = []
             for security_group in security_groups:
-                if self.has_high_threat_port(security_group):
-                    high_threat_groups.append(security_group)
-            if high_threat_groups:
-                high_threat_groups_by_region[region] = high_threat_groups
+                found_ports = self.find_high_threat_ports(security_group)
+                if found_ports:
+                    high_threat_groups.append({
+                        'id': security_group['GroupId'],
+                        'ports': found_ports,
+                    })
+
+            high_threat_groups_by_region[region] = high_threat_groups
 
         return high_threat_groups_by_region
 
-    def has_high_threat_port(self, security_group):
+    def find_high_threat_ports(self, security_group):
+        ports = []
         for rule in security_group['IpPermissions']:
             if rule.get('FromPort') in self.high_threat_ports:
-                return True
-        return False
+                ports.append(rule['FromPort'])
+
+        return ports
