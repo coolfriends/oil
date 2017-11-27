@@ -13,41 +13,52 @@ class InstanceHighThreatPortPlugin(Plugin):
     }
 
     default_config = {
-        'root_user_enabled_message': {
-            'name': 'Root User MFA Enabled Message',
-            'description': 'Change the message for Root User MFA Enabled',
-            'value_description': '{username}',
-            'default': 'MFA enabled for {username}',
+        'high_threat_message': {
+            'name': 'High Threat Message',
+            'description': (
+                'Message to display if an instance has a '
+                'high threat port open'
+            ),
+            'value_description': '{port} {group_id}',
+            'default': 'Port {port} open on group {group_id}',
         },
-        'root_user_not_enabled_message': {
-            'name': 'Root User MFA Not Enabled Message',
-            'description': 'Change the message for Root User MFA Not Enabled',
-            'value_description': '{username}',
-            'default': 'MFA not enabled for {username}',
-        },
-        'root_user_not_enabled_severity_level': {
-            'name': 'Root User MFA Not Enabled Severity',
-            'description': 'Severity for no MFA device enabled for root user',
-            'value_description': '0 1 2',
-            'default': 2
-        },
-        'enabled_message': {
-            'name': 'MFA Enabled Message',
-            'description': 'Change the message for MFA Enabled',
-            'value_description': '{username}',
-            'default': 'MFA enabled for {username}',
-        },
-        'not_enabled_message': {
-            'name': 'MFA Not Enabled Message',
-            'description': 'Change the message for MFA Not Enabled',
-            'value_description': '{username}',
-            'default': 'MFA not enabled for {username}',
-        },
-        'not_enabled_severity_level': {
-            'name': 'MFA Not Enabled Severity Level',
-            'description': 'Adjust the severity for no MFA device enabled',
+        'high_threat_severity': {
+            'name': 'High Threat Severity',
+            'description': (
+                'Severity level for a instance with a '
+                'high threat port open'
+            ),
             'value_description': '0 1 2',
             'default': 2,
+        },
+        'no_high_threat_display': {
+            'name': 'No Instances Display',
+            'description': (
+                'Choose whether to display a message when an instance does '
+                'not have a high threat port open'
+            ),
+            'value_description': 'True or False',
+            'default': True,
+        },
+        'no_high_threat_message': {
+            'name': 'No Instances Message',
+            'description': 'Change the message for instances in a region',
+            'value_description': 'string',
+            'default': 'Instance has no high threat ports open',
+        },
+        'no_instances_display': {
+            'name': 'No Instances Display',
+            'description': (
+                'Choose whether to display no instances message in results',
+            ),
+            'value_description': 'True or False',
+            'default': True,
+        },
+        'no_instances_message': {
+            'name': 'No Instances Message',
+            'description': 'Change the message for instances in a region',
+            'value_description': 'string',
+            'default': 'No instances found',
         },
     }
 
@@ -57,15 +68,15 @@ class InstanceHighThreatPortPlugin(Plugin):
 
         requirements = self.collect_requirements(api_data)
         instances_by_region = requirements['instances']
-        groups_by_region = requirements['groups']
+        high_threat_groups_by_region = requirements['groups']
 
         for region, instances in instances_by_region.items():
-            if not instances:
+            if not instances and self.config['no_instances_display']:
                 self.results.append({
                     'resource': 'None',
                     'region': region,
                     'severity': 0,
-                    'message': 'No instances found'
+                    'message': self.config['no_instances_message'],
                 })
 
             for instance in instances:
@@ -73,29 +84,31 @@ class InstanceHighThreatPortPlugin(Plugin):
                 resource = instance['InstanceId']
 
                 for group in instance.get('SecurityGroups', []):
-                    for high_threat in groups_by_region[region]:
-                        if group['GroupId'] == high_threat['id']:
+                    high_threat_groups = high_threat_groups_by_region[region]
+                    for high_threat_group in high_threat_groups:
+                        if group['GroupId'] == high_threat_group['id']:
                             found = True
-                            for high_threat_port in high_threat['ports']:
+                            for high_threat_port in high_threat_group['ports']:
                                 self.results.append({
                                     'resource': resource,
                                     'region': region,
-                                    'severity': 2,
-                                    'message': (
-                                        'High threat port open: {port}'.format(
-                                            port=high_threat_port
-                                        )
+                                    'severity': self.config.get(
+                                        'high_threat_severity'
+                                    ),
+                                    'message': self.config.get(
+                                        'high_threat_message'
+                                    ).format(
+                                        port=high_threat_port,
+                                        group_id=group['GroupId'],
                                     )
                                 })
 
-                if not found:
+                if not found and self.config['no_high_threat_display']:
                     self.results.append({
                         'resource': resource,
                         'region': region,
                         'severity': 0,
-                        'message': (
-                            'Instance does not have any high threat ports open'
-                        )
+                        'message': self.config['no_high_threat_message'],
                     })
 
         return self.results
