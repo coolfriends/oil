@@ -266,6 +266,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         results = barrel.high_threat_security_groups()
 
         expected = {
+            'us-east-1': []
         }
 
         self.assertEqual(results, expected)
@@ -277,7 +278,7 @@ class EC2BarrelTestCase(unittest.TestCase):
                     {
                         'IpPermissions': [
                             {
-                            'FromPort': 10
+                                'FromPort': 10
                             }
                         ]
                     }
@@ -292,6 +293,7 @@ class EC2BarrelTestCase(unittest.TestCase):
         results = barrel.high_threat_security_groups()
 
         expected = {
+            'us-east-1': []
         }
 
         self.assertEqual(results, expected)
@@ -301,11 +303,12 @@ class EC2BarrelTestCase(unittest.TestCase):
             {
                 'SecurityGroups': [
                     {
+                        'GroupId': 'someid',
                         'IpPermissions': [
                             {
                                 'FromPort': 80
                             }
-                        ]
+                        ],
                     }
                 ]
             }
@@ -320,11 +323,10 @@ class EC2BarrelTestCase(unittest.TestCase):
         expected = {
             'us-east-1': [
                 {
-                    'IpPermissions': [
-                        {
-                            'FromPort': 80,
-                        }
-                    ]
+                    'id': 'someid',
+                    'ports': [
+                        80
+                    ],
                 }
             ]
         }
@@ -336,11 +338,12 @@ class EC2BarrelTestCase(unittest.TestCase):
             {
                 'SecurityGroups': [
                     {
+                        'GroupId': 'my_id',
                         'IpPermissions': [
                             {
-                                'FromPort': 9000  # Not usually high threat
+                                'FromPort': 9000,  # Not usually high threat
                             }
-                        ]
+                        ],
                     }
                 ]
             }
@@ -357,10 +360,9 @@ class EC2BarrelTestCase(unittest.TestCase):
         expected = {
             'us-east-1': [
                 {
-                    'IpPermissions': [
-                        {
-                            'FromPort': 9000,
-                        }
+                    'id': 'my_id',
+                    'ports': [
+                        9000
                     ]
                 }
             ]

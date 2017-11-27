@@ -6,6 +6,7 @@ from oil import Oil
 from oil.barrels.aws import EC2Barrel
 from oil.plugins.aws.ec2 import InstanceNameTagPlugin
 from oil.plugins.aws.ec2 import PublicIpPlugin
+from oil.plugins.aws.ec2 import InstanceHighThreatPortPlugin
 
 
 @unittest.skipIf(os.environ.get('OIL_FUNCTIONAL_TESTS', 'False') != 'True', "Skipping functional tests")
@@ -31,5 +32,17 @@ class EC2ScanningTestCase(unittest.TestCase):
         aws_results = results.get('aws', {})
         ec2_results = aws_results.get('ec2', {})
         plugin_results = ec2_results.get('public_ip', [])
+
+        self.assertNotEqual(plugin_results, [])
+
+    def test_oil_can_scan_for_high_threat_ports_on_instances(self):
+        oil = Oil()
+        oil.register_barrel(EC2Barrel)
+        oil.register_plugin(InstanceHighThreatPortPlugin)
+        results = oil.scan()
+
+        aws_results = results.get('aws', {})
+        ec2_results = aws_results.get('ec2', {})
+        plugin_results = ec2_results.get('instance_high_threat_port', [])
 
         self.assertNotEqual(plugin_results, [])
