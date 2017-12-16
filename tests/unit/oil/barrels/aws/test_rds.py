@@ -138,3 +138,71 @@ class RDSBarrelTestCase(unittest.TestCase):
         }
 
         self.assertEqual(results, expected)
+
+    def test_describe_security_groups_returns_region_empty_list_with_no_groups(self):
+        fixture = [
+            {
+                'DBSecurityGroups': []
+            },
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = RDSBarrel({}, clients=clients)
+
+        results = barrel.describe_db_security_groups()
+
+        expected = {
+            'us-east-1': []
+        }
+
+        self.assertEqual(results, expected)
+
+    def test_describe_security_groups_returns_groups_by_region(self):
+        fixture = [
+            {
+                'DBSecurityGroups': [
+                    {
+                        'a_key': 'a_value',
+                    },
+                    {
+                        'a_key': 'a_value2',
+                    },
+                ]
+            },
+            {
+                'DBSecurityGroups': [
+                    {
+                        'a_key': 'a_value3',
+                    },
+                    {
+                        'a_key': 'a_value4',
+                    },
+                ]
+            },
+        ]
+        clients = {
+            'us-east-1': self.client_mock(fixture)
+        }
+        barrel = RDSBarrel({}, clients=clients)
+
+        results = barrel.describe_db_security_groups()
+
+        expected = {
+            'us-east-1': [
+                {
+                    'a_key': 'a_value',
+                },
+                {
+                    'a_key': 'a_value2',
+                },
+                {
+                    'a_key': 'a_value3',
+                },
+                {
+                    'a_key': 'a_value4',
+                },
+            ]
+        }
+
+        self.assertEqual(results, expected)

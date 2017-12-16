@@ -22,6 +22,7 @@ class RDSBarrel(Barrel):
     service = 'rds'
     tap_calls = set([
         'describe_db_instances',
+        'describe_db_security_groups',
     ])
 
     def __init__(self, oil, **kwargs):
@@ -42,3 +43,19 @@ class RDSBarrel(Barrel):
             db_instances_by_region[region] = db_instances
 
         return db_instances_by_region
+
+    def describe_db_security_groups(self):
+        db_security_groups_by_region = {}
+        for region, client in self.clients.items():
+            paginator = client.get_paginator(
+                'describe_db_security_groups'
+            )
+            response_iterator = paginator.paginate()
+            db_instances = []
+
+            for page in response_iterator:
+                db_instances.extend(page.get('DBSecurityGroups', []))
+
+            db_security_groups_by_region[region] = db_instances
+
+        return db_security_groups_by_region
