@@ -27,7 +27,7 @@ class ConfigServiceBarrelCase(unittest.TestCase):
             'ap-southheast-1',
             'ap-southheast-2',
             'ca-central-1',
-            'cn-north-1'
+            'cn-north-1',
             'cn-northwest-1',
             'eu-central-1',
             'eu-west-1',
@@ -79,45 +79,33 @@ class ConfigServiceBarrelCase(unittest.TestCase):
             barrel.tap('unsupported_call')
 
     def test_describe_configuration_recorders_lists_by_region(self):
-        fixture_1 = [
-            {
-                'ConfigurationRecorders': [
-                    {
-                        'name': 'A Recorder',
-                    }
-                ]
-            },
-            {
-                'ConfigurationRecorders': [
-                    {
-                        'name': 'A Recorder 2',
-                    }
-                ]
-            }
-        ]
-        fixture_2 = [
-            {
-                'ConfigurationRecorders': [
-                    {
-                        'name': 'A Recorder 3',
-                    }
-                ]
-            },
-            {
-                'ConfigurationRecorders': [
-                    {
-                        'name': 'A Recorder 4',
-                    }
-                ]
-            }
-        ]
+        fixture_1 = {
+            'ConfigurationRecorders': [
+                {
+                    'name': 'A Recorder',
+                },
+                {
+                    'name': 'A Recorder 2',
+                }
+            ]
+        }
+        fixture_2 = {
+            'ConfigurationRecorders': [
+                {
+                    'name': 'A Recorder 3',
+                },
+                {
+                    'name': 'A Recorder 4',
+                }
+            ]
+        }
         clients = {
             'us-east-1': self.client_mock(fixture_1),
             'us-east-2': self.client_mock(fixture_2),
         }
         barrel = ConfigServiceBarrel({}, clients=clients)
 
-        results = barrel.describe_metric_filters()
+        results = barrel.describe_configuration_recorders()
 
         expected = {
             'us-east-1': [
@@ -141,11 +129,9 @@ class ConfigServiceBarrelCase(unittest.TestCase):
         self.assertEqual(results, expected)
 
     def test_describe_configuration_recorders_empty(self):
-        fixture = [
-            {
-                'ConfigurationRecorders': []
-            }
-        ]
+        fixture = {
+            'ConfigurationRecorders': []
+        }
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
@@ -161,38 +147,26 @@ class ConfigServiceBarrelCase(unittest.TestCase):
         self.assertEqual(results, expected)
 
     def test_describe_configuration_recorder_status_lists_by_region(self):
-        fixture_1 = [
-            {
-                'ConfigurationRecordersStatus': [
-                    {
-                        'name': 'A Recorder',
-                    }
-                ]
-            },
-            {
-                'ConfigurationRecordersStatus': [
-                    {
-                        'name': 'A Recorder 2',
-                    }
-                ]
-            }
-        ]
-        fixture_2 = [
-            {
-                'ConfigurationRecordersStatus': [
-                    {
-                        'name': 'A Recorder 3',
-                    }
-                ]
-            },
-            {
-                'ConfigurationRecordersStatus': [
-                    {
-                        'name': 'A Recorder 4',
-                    }
-                ]
-            }
-        ]
+        fixture_1 = {
+            'ConfigurationRecordersStatus': [
+                {
+                    'name': 'A Recorder',
+                },
+                {
+                    'name': 'A Recorder 2',
+                }
+            ]
+        }
+        fixture_2 = {
+            'ConfigurationRecordersStatus': [
+                {
+                    'name': 'A Recorder 3',
+                },
+                {
+                    'name': 'A Recorder 4',
+                }
+            ]
+        }
         clients = {
             'us-east-1': self.client_mock(fixture_1),
             'us-east-2': self.client_mock(fixture_2),
@@ -223,11 +197,9 @@ class ConfigServiceBarrelCase(unittest.TestCase):
         self.assertEqual(results, expected)
 
     def test_describe_configuration_recorder_status_empty(self):
-        fixture = [
-            {
-                'ConfigurationRecordersStatus': []
-            }
-        ]
+        fixture = {
+            'ConfigurationRecordersStatus': []
+        }
         clients = {
             'us-east-1': self.client_mock(fixture)
         }
