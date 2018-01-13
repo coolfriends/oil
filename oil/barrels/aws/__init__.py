@@ -1,4 +1,5 @@
 from oil.barrels.aws.autoscaling import AutoScalingBarrel
+from oil.barrels.aws.configservice import ConfigServiceBarrel
 from oil.barrels.aws.cloudfront import CloudFrontBarrel
 from oil.barrels.aws.cloudtrail import CloudTrailBarrel
 from oil.barrels.aws.cloudwatchlogs import CloudWatchLogsBarrel
@@ -8,8 +9,10 @@ from oil.barrels.aws.rds import RDSBarrel
 
 core_barrels = [
     AutoScalingBarrel,
+    ConfigServiceBarrel,
     CloudFrontBarrel,
     CloudTrailBarrel,
+    CloudWatchLogsBarrel,
     IAMBarrel,
     EC2Barrel,
     RDSBarrel,
