@@ -6,6 +6,7 @@ from oil.barrels.aws.cloudwatchlogs import CloudWatchLogsBarrel
 from oil.barrels.aws.iam import IAMBarrel
 from oil.barrels.aws.ec2 import EC2Barrel
 from oil.barrels.aws.rds import RDSBarrel
+from oil.barrels.aws.sts import STSBarrel
 
 core_barrels = [
     AutoScalingBarrel,
@@ -16,4 +17,5 @@ core_barrels = [
     IAMBarrel,
     EC2Barrel,
     RDSBarrel,
+    STSBarrel,
 ]

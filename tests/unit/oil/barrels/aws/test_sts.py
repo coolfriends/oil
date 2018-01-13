@@ -16,7 +16,7 @@ class STSBarrelTestCase(unittest.TestCase):
         https://docs.aws.amazon.com/general/latest/gr/rande.html#sts_region
         """
         supported_regions = set([
-            'aws-global'
+            'aws-global',
             'us-east-2',
             'us-east-1',
             'us-west-2',
@@ -70,16 +70,12 @@ class STSBarrelTestCase(unittest.TestCase):
         results = barrel.get_caller_identity()
 
         expected = {
-            'us-east-1': [
-                {
-                    'UserId': 'AWS User ID'
-                },
-            ],
-            'us-east-2': [
-                {
-                    'UserId': 'AWS User ID2'
-                },
-            ]
+            'us-east-1': {
+                'UserId': 'AWS User ID'
+            },
+            'us-east-2': {
+                'UserId': 'AWS User ID2'
+            },
         }
 
         self.assertEqual(results, expected)
