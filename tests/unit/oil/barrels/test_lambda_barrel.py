@@ -7,7 +7,12 @@ class LambdaBarrelTestCase(unittest.TestCase):
 
     def client_mock(self, fixture):
         client = MagicMock()
-        client.get_caller_identity.return_value = fixture
+        paginator = MagicMock()
+        response_iterator = fixture
+
+        paginator.paginate.return_value = response_iterator
+        client.get_paginator.return_value = paginator
+
         return client
 
     def test_has_correct_supported_regions(self):
@@ -26,19 +31,27 @@ class LambdaBarrelTestCase(unittest.TestCase):
             'ap-southheast-1',
             'ap-southheast-2',
             'ca-central-1',
-            'cn-north-1',
             'eu-central-1',
             'eu-west-1',
             'eu-west-2',
+            'eu-west-3',
             'sa-east-1',
         ])
         barrel = LambdaBarrel({}, clients={})
         self.assertEqual(supported_regions, barrel.supported_regions)
 
     def test_tap_functions_with_list_functions(self):
-        client = MagicMock()
+        fixture_1 = [
+            {
+                'Functions': [
+                    {
+                        'FunctionName': 'Function 1',
+                    }
+                ]
+            }
+        ]
         clients = {
-            'us-east-1': client
+            'us-east-1': self.client_mock(fixture_1),
         }
         barrel = LambdaBarrel({}, clients=clients)
         tap_return = barrel.tap('list_functions')
@@ -47,12 +60,30 @@ class LambdaBarrelTestCase(unittest.TestCase):
         self.assertEqual(expected, tap_return)
 
     def test_can_list_functions_by_region(self):
-        fixture_1 = {
-            'FunctionName': 'Function 1',
-        }
-        fixture_2 = {
-            'FunctionName': 'Function 2',
-        }
+        fixture_1 = [
+            {
+                'Functions': [
+                    {
+                        'FunctionName': 'Function 1',
+                    },
+                    {
+                        'FunctionName': 'Function 2',
+                    }
+                ]
+            }
+        ]
+        fixture_2 = [
+            {
+                'Functions': [
+                    {
+                        'FunctionName': 'Function 3',
+                    },
+                    {
+                        'FunctionName': 'Function 4',
+                    }
+                ]
+            }
+        ]
         clients = {
             'us-east-1': self.client_mock(fixture_1),
             'us-east-2': self.client_mock(fixture_2),
@@ -62,38 +93,48 @@ class LambdaBarrelTestCase(unittest.TestCase):
         results = barrel.list_functions()
 
         expected = {
-            'us-east-1': {
-                'UserId': 'AWS User ID'
-            },
-            'us-east-2': {
-                'UserId': 'AWS User ID2'
-            },
+            'us-east-1': [
+                {
+                    'FunctionName': 'Function 1'
+                },
+                {
+                    'FunctionName': 'Function 2'
+                }
+            ],
+            'us-east-2': [
+                {
+                    'FunctionName': 'Function 3'
+                },
+                {
+                    'FunctionName': 'Function 4'
+                }
+            ],
         }
 
         self.assertEqual(results, expected)
 
     def test_can_list_functions_empty(self):
-        fixture_1 = {
-            'FunctionName': 'Function 1',
-        }
-        fixture_2 = {
-            'FunctionName': 'Function 2',
-        }
+        fixture_1 = [
+            {
+                'Functions': []
+            }
+        ]
+        fixture_2 = [
+            {
+                'Functions': []
+            }
+        ]
         clients = {
             'us-east-1': self.client_mock(fixture_1),
             'us-east-2': self.client_mock(fixture_2),
         }
         barrel = LambdaBarrel({}, clients=clients)
 
-        results = barrel.get_caller_identity()
+        results = barrel.list_functions()
 
         expected = {
-            'us-east-1': {
-                'UserId': 'AWS User ID'
-            },
-            'us-east-2': {
-                'UserId': 'AWS User ID2'
-            },
+            'us-east-1': [],
+            'us-east-2': [],
         }
 
         self.assertEqual(results, expected)
