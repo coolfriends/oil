@@ -75,6 +75,71 @@ class SESBarrelTestCase(unittest.TestCase):
 
         self.assertEqual(results, expected)
 
+    def test_get_identity_dkim_attributes_by_region(self):
+        list_identities_fixture = {
+            'us-east-1': [
+                'identity_1',
+                'identity_2',
+            ],
+            'us-west-2': [
+                'identity_3',
+                'identity_4',
+            ]
+        }
+
+        client_1 = MagicMock()
+        client_1.get_identity_dkim_attributes.return_value = {
+            'DkimAttributes': {
+                'identity_1': {
+                    'DkimEnabled': True,
+                },
+                'identity_2': {
+                    'DkimEnabled': True,
+                },
+            }
+        }
+
+        client_2 = MagicMock()
+        client_2.get_identity_dkim_attributes.return_value = {
+            'DkimAttributes': {
+                'identity_3': {
+                    'DkimEnabled': True,
+                },
+                'identity_4': {
+                    'DkimEnabled': True,
+                },
+            }
+        }
+        clients = {
+            'us-east-1': client_1,
+            'us-west-2': client_2
+        }
+        barrel = SESBarrel({}, clients=clients)
+        barrel.cache['list_identities'] = list_identities_fixture
+
+        results = barrel.get_identity_dkim_attributes()
+
+        expected = {
+            'us-east-1': {
+                'identity_1': {
+                    'DkimEnabled': True
+                },
+                'identity_2': {
+                    'DkimEnabled': True
+                },
+            },
+            'us-west-2': {
+                'identity_3': {
+                    'DkimEnabled': True
+                },
+                'identity_4': {
+                    'DkimEnabled': True
+                },
+            }
+        }
+
+        self.assertEqual(results, expected)
+
     def test_list_identities_cached(self):
         fixture_1 = [
             {
