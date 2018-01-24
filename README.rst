@@ -10,6 +10,7 @@ Oil is an extensible cloud security analysis tool.
 Goals
 -----
 This project is based on some specific design goals:
+
 - Written in Python
 - Covers best practices by default for cloud services
 - Provides a reference for justifcation/support for best practices
