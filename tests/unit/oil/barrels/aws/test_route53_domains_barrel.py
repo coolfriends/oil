@@ -18,7 +18,7 @@ class Route53DomainsBarrelTestCase(unittest.TestCase):
     def test_has_correct_supported_regions(self):
         """
         Reference:
-        https://docs.aws.amazon.com/general/latest/gr/rande.html#sts_region
+        https://docs.aws.amazon.com/general/latest/gr/rande.html#r53_region
         """
         supported_regions = set([
             'us-east-1',
