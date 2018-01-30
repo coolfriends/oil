@@ -10,22 +10,9 @@ class Route53DomainsBarrel(Barrel):
     tap_calls = set([
         'list_domains',
     ])
+    paginators = {
+        'list_domains': ['Domains']
+    }
 
     def __init__(self, oil, **kwargs):
         super().__init__(oil, **kwargs)
-
-    def list_domains(self):
-        domains_by_region = {}
-        for region, client in self.clients.items():
-            paginator = self.clients[region].get_paginator(
-                'list_domains',
-            )
-            response_iterator = paginator.paginate()
-            domains = []
-
-            for page in response_iterator:
-                domains.extend(page['Domains'])
-
-            domains_by_region[region] = domains
-
-        return domains_by_region

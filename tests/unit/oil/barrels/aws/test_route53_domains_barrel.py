@@ -78,7 +78,7 @@ class Route53DomainsBarrelTestCase(unittest.TestCase):
         }
         barrel = Route53DomainsBarrel({}, clients=clients)
 
-        results = barrel.list_domains()
+        results = barrel.tap('list_domains')
 
         expected = {
             'us-east-1': [
