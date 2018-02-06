@@ -16,12 +16,16 @@ class Barrel():
             aws_secret_access_key=kwargs.get('aws_secret_access_key'),
             aws_session_token=kwargs.get('session_token'),
         )
+        self.cache = {}
         self.regions = kwargs.get('regions', self.supported_regions)
         self.clients = kwargs.get('clients')
         if self.clients is None:
             self.clients = self._make_clients()
 
     def paginate(self, call):
+        if self.cache.get(call):
+            return self.cache[call]
+
         items_by_region = {}
         for region, client in self.clients.items():
             paginator = self.clients[region].get_paginator(call)

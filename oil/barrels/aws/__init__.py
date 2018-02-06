@@ -5,6 +5,7 @@ from oil.barrels.aws.cloudtrail import CloudTrailBarrel
 from oil.barrels.aws.cloudwatchlogs import CloudWatchLogsBarrel
 from oil.barrels.aws.iam import IAMBarrel
 from oil.barrels.aws.ec2 import EC2Barrel
+from oil.barrels.aws.elb_barrel import ELBBarrel
 from oil.barrels.aws.lambda_barrel import LambdaBarrel
 from oil.barrels.aws.rds import RDSBarrel
 from oil.barrels.aws.redshift_barrel import RedShiftBarrel
@@ -20,6 +21,7 @@ core_barrels = [
     CloudWatchLogsBarrel,
     IAMBarrel,
     EC2Barrel,
+    ELBBarrel,
     LambdaBarrel,
     RDSBarrel,
     RedShiftBarrel,
