@@ -8,7 +8,7 @@ class SESBarrel(Barrel):
         'eu-west-1',
     ])
     provider = 'aws'
-    service = 'autoscaling'
+    service = 'ses'
     tap_calls = set([
         'list_identities',
         'get_identity_dkim_attributes',

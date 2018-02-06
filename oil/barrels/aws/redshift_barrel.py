@@ -20,7 +20,7 @@ class RedShiftBarrel(Barrel):
         'sa-east-1',
     ])
     provider = 'aws'
-    service = 'lambda'
+    service = 'redshift'
     tap_calls = set([
         'describe_clusters',
     ])
