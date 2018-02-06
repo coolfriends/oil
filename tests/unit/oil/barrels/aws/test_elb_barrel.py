@@ -127,3 +127,85 @@ class ELBBarrelTestCase(unittest.TestCase):
         }
 
         self.assertEqual(results, expected)
+
+    def test_describe_load_balancer_policies_by_region(self):
+        describe_load_balancers_fixture = {
+            'us-east-1': [
+                {
+                    'LoadBalancerName': 'Load Balancer 1'
+                }
+            ]
+        }
+
+        client = MagicMock()
+        client.describe_load_balancer_policies.return_value = {
+            'PolicyDescriptions': [
+                {
+                    'PolicyName': 'Policy1'
+                },
+                {
+                    'PolicyName': 'Policy2'
+                },
+            ]
+        }
+
+        clients = {
+            'us-east-1': client,
+        }
+        barrel = ELBBarrel({}, clients=clients)
+        barrel.cache['describe_load_balancers'] = describe_load_balancers_fixture
+
+        results = barrel.describe_load_balancer_policies()
+
+        expected = {
+            'us-east-1': {
+                'Load Balancer 1': [
+                    {
+                        'PolicyName': 'Policy1'
+                    },
+                    {
+                        'PolicyName': 'Policy2'
+                    }
+                ],
+            }
+        }
+
+        self.assertEqual(results, expected)
+
+    def test_describe_load_balancer_attributes_by_region(self):
+        describe_load_balancers_fixture = {
+            'us-east-1': [
+                {
+                    'LoadBalancerName': 'Load Balancer 1'
+                }
+            ]
+        }
+
+        client = MagicMock()
+        client.describe_load_balancer_attributes.return_value = {
+            'LoadBalancerAttributes': {
+                'CrossZoneLoadBalancing': {
+                    'Enabled': False
+                }
+            }
+        }
+
+        clients = {
+            'us-east-1': client,
+        }
+        barrel = ELBBarrel({}, clients=clients)
+        barrel.cache['describe_load_balancers'] = describe_load_balancers_fixture
+
+        results = barrel.describe_load_balancer_attributes()
+
+        expected = {
+            'us-east-1': {
+                'Load Balancer 1': {
+                    'CrossZoneLoadBalancing': {
+                        'Enabled': False
+                    }
+                },
+            }
+        }
+
+        self.assertEqual(results, expected)

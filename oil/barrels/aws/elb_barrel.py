@@ -34,7 +34,59 @@ class ELBBarrel(Barrel):
         super().__init__(oil, **kwargs)
 
     def describe_load_balancer_attributes(self):
-        pass
+        """
+
+        Example
+          barrel = ELBBarrel()
+          results = barrel.describe_load_balancer_attributes()
+
+        Returns
+          {
+            'us-east-1': {
+              'ALoadBalancer': {
+                ... # Attributes like CrossZoneLoadBalancing, AccessLog
+              }
+            }
+          }
+
+        Depends on describe_load_balancers
+        """
+        items = {}
+        for region, client in self.clients.items():
+            items[region] = {}
+
+            for load_balancer in self.tap('describe_load_balancers')[region]:
+                response = client.describe_load_balancer_attributes(
+                    LoadBalancerName=load_balancer['LoadBalancerName']
+                )
+                items[region][load_balancer['LoadBalancerName']] = response['LoadBalancerAttributes']
+
+        return items
 
     def describe_load_balancer_policies(self):
-        pass
+        """
+        Example
+          barrel = ELBBarrel()
+          results = barrel.describe_load_balancer_attributes()
+
+        Returns
+          {
+            'us-east-1': {
+              'ALoadBalancer': {
+                ... # Attributes like CrossZoneLoadBalancing, AccessLog
+              }
+            }
+          }
+
+        Depends on describe_load_balancers
+        """
+        policies_by_region = {}
+        for region, client in self.clients.items():
+            policies_by_region[region] = {}
+
+            for load_balancer in self.tap('describe_load_balancers')[region]:
+                response = client.describe_load_balancer_policies(
+                    LoadBalancerName=load_balancer['LoadBalancerName']
+                )
+                policies_by_region[region][load_balancer['LoadBalancerName']] = response['PolicyDescriptions']
+        return policies_by_region
