@@ -13,6 +13,7 @@ from oil.barrels.aws.route53_domains_barrel import Route53DomainsBarrel
 from oil.barrels.aws.ses_barrel import SESBarrel
 from oil.barrels.aws.sns_barrel import SNSBarrel
 from oil.barrels.aws.sts import STSBarrel
+from oil.barrels.aws.sqs_barrel import SQSBarrel
 
 core_barrels = [
     AutoScalingBarrel,
@@ -30,4 +31,5 @@ core_barrels = [
     SESBarrel,
     SNSBarrel,
     STSBarrel,
+    SQSBarrel,
 ]
