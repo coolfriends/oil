@@ -10,6 +10,7 @@ from oil.barrels.aws.lambda_barrel import LambdaBarrel
 from oil.barrels.aws.rds import RDSBarrel
 from oil.barrels.aws.redshift_barrel import RedShiftBarrel
 from oil.barrels.aws.route53_domains_barrel import Route53DomainsBarrel
+from oil.barrels.aws.s3_barrel import S3Barrel
 from oil.barrels.aws.ses_barrel import SESBarrel
 from oil.barrels.aws.sns_barrel import SNSBarrel
 from oil.barrels.aws.sts import STSBarrel
@@ -32,4 +33,5 @@ core_barrels = [
     SNSBarrel,
     STSBarrel,
     SQSBarrel,
+    S3Barrel,
 ]
