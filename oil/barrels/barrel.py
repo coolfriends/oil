@@ -38,7 +38,6 @@ class Barrel():
                     if item is None:
                         item = page.get(obj_key, {})
                     else:
-                        print(item)
                         item = item[obj_key]
                 items.extend(item)
 
